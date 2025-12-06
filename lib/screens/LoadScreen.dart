@@ -1,0 +1,89 @@
+import 'dart:async';
+import 'package:codit_competition/screens/competition_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+
+class Loadscreen extends StatefulWidget {
+  const Loadscreen({super.key, required this.competition});
+  final String competition;
+  @override
+  State<Loadscreen> createState() => _LoadscreenState();
+}
+
+class _LoadscreenState extends State<Loadscreen> {
+  int _counter = 5;
+  Timer? _timer;
+  late String comp;
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+    comp = widget.competition;
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_counter == 0) {
+        _timer?.cancel();
+        // Navigate to another screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CompetitionScreen(competitionType: comp),
+          ),
+        );
+      } else {
+        setState(() {
+          _counter--;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return Scaffold(
+      body: Stack(
+        children: [
+          Lottie.asset(
+            "assets/Background.json",
+            width: width,
+            height: height,
+            fit: BoxFit.cover,
+          ),
+          Center(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.18),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: SizedBox(
+                width: 400,
+                height: 400,
+                child: Center(
+                  child: Text(
+                    "$_counter",
+                    style: GoogleFonts.aBeeZee(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 200,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
