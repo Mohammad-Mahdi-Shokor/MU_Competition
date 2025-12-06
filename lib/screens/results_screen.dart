@@ -19,6 +19,7 @@ class ResultsScreen extends StatelessWidget {
   final String team2Name;
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Stack(
         children: [
@@ -30,18 +31,21 @@ class ResultsScreen extends StatelessWidget {
                 team1Score != team2Score
                     ? Text(
                       "Congrats, ${team1Score > team2Score ? team1Name : team2Name} won \n with a score of ${max(team1Score, team2Score)}",
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.aBeeZee(
                         color: Colors.black,
+
                         fontWeight: FontWeight.bold,
-                        fontSize: 80,
+                        fontSize: width > 700 ? 80 : 40,
                       ),
                     )
                     : Text(
                       "Congrats, it is a draw!!!",
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.aBeeZee(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-                        fontSize: 80,
+                        fontSize: width > 700 ? 80 : 40,
                       ),
                     ),
                 ElevatedButton(

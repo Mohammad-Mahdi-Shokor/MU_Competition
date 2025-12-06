@@ -5,8 +5,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 class Loadscreen extends StatefulWidget {
-  const Loadscreen({super.key, required this.competition});
+  const Loadscreen({
+    super.key,
+    required this.competition,
+    required this.team1,
+    required this.team2,
+  });
   final String competition;
+  final String team1;
+  final String team2;
   @override
   State<Loadscreen> createState() => _LoadscreenState();
 }
@@ -30,7 +37,12 @@ class _LoadscreenState extends State<Loadscreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => CompetitionScreen(competitionType: comp),
+            builder:
+                (context) => CompetitionScreen(
+                  competitionType: comp,
+                  team1: widget.team1,
+                  team2: widget.team2,
+                ),
           ),
         );
       } else {

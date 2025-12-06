@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
+import 'InitialiseUsers.dart';
+
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
 
@@ -90,7 +92,8 @@ class _StartScreenState extends State<StartScreen>
                             context,
                             "Code_it;",
                             "assets/ComputerScience2.json",
-                            Loadscreen(competition: "Code it"),
+                            TeamInputScreen(competition: "Code it"),
+
                             width,
                           ),
                           const Spacer(),
@@ -98,7 +101,7 @@ class _StartScreenState extends State<StartScreen>
                             context,
                             "Business Club",
                             "assets/Business.json",
-                            Loadscreen(competition: "Business Club"),
+                            TeamInputScreen(competition: "Business Club"),
                             width,
                           ),
                         ],
@@ -111,7 +114,7 @@ class _StartScreenState extends State<StartScreen>
                             context,
                             "Code_it;",
                             "assets/ComputerScience2.json",
-                            Loadscreen(competition: "Code it"),
+                            TeamInputScreen(competition: "Code it"),
                             width,
                           ),
 
@@ -119,7 +122,7 @@ class _StartScreenState extends State<StartScreen>
                             context,
                             "Business Club",
                             "assets/Business.json",
-                            Loadscreen(competition: "Business Club"),
+                            TeamInputScreen(competition: "Business Club"),
                             width,
                           ),
                         ],

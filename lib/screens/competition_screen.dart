@@ -8,9 +8,15 @@ import 'package:lottie/lottie.dart';
 import '../questions.dart';
 
 class CompetitionScreen extends StatefulWidget {
-  const CompetitionScreen({super.key, required this.competitionType});
+  const CompetitionScreen({
+    super.key,
+    required this.competitionType,
+    required this.team1,
+    required this.team2,
+  });
   final String competitionType;
-
+  final String team1;
+  final String team2;
   @override
   State<CompetitionScreen> createState() => _CompetitionScreenState();
 }
@@ -24,8 +30,8 @@ class _CompetitionScreenState extends State<CompetitionScreen>
   late List<String> shownQuestions;
   late List<List<String>> shownAnswers;
 
-  String team1 = "team 1";
-  String team2 = "team 2";
+  late String team1 = widget.team1;
+  late String team2 = widget.team2;
   int team1Score = 0;
   int team2Score = 0;
 
@@ -412,7 +418,7 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                             }).toList(),
                       ),
                     ),
-
+                    width > 700 ? Container() : SizedBox(height: 100),
                     // SCORE + TIMER
                     width > 700
                         ? Expanded(
@@ -425,16 +431,12 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                               children: [
                                 currentTeam == 1
                                     ? buildScoreCardThereTurn(
-                                      "Team One",
+                                      team1,
                                       team1Score,
                                       team1Color,
                                       width,
                                     )
-                                    : buildScoreCard(
-                                      "Team One",
-                                      team1Score,
-                                      width,
-                                    ),
+                                    : buildScoreCard(team1, team1Score, width),
 
                                 const Spacer(),
 
@@ -463,16 +465,12 @@ class _CompetitionScreenState extends State<CompetitionScreen>
 
                                 currentTeam == 2
                                     ? buildScoreCardThereTurn(
-                                      "Team Two",
+                                      team2,
                                       team2Score,
                                       team2Color,
                                       width,
                                     )
-                                    : buildScoreCard(
-                                      "Team Two",
-                                      team2Score,
-                                      width,
-                                    ),
+                                    : buildScoreCard(team2, team2Score, width),
                               ],
                             ),
                           ),
@@ -481,12 +479,12 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                           children: [
                             currentTeam == 1
                                 ? buildScoreCardThereTurn(
-                                  "Team One",
+                                  team1,
                                   team1Score,
                                   team1Color,
                                   width,
                                 )
-                                : buildScoreCard("Team One", team1Score, width),
+                                : buildScoreCard(team1, team1Score, width),
 
                             const Spacer(),
 
@@ -515,12 +513,12 @@ class _CompetitionScreenState extends State<CompetitionScreen>
 
                             currentTeam == 2
                                 ? buildScoreCardThereTurn(
-                                  "Team Two",
+                                  team2,
                                   team2Score,
                                   team2Color,
                                   width,
                                 )
-                                : buildScoreCard("Team Two", team2Score, width),
+                                : buildScoreCard(team2, team2Score, width),
                           ],
                         ),
                     SizedBox(height: height * 0.05),
