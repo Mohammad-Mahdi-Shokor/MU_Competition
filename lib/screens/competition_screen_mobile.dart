@@ -103,7 +103,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
   // ----------------------------------------------------------
   void startTimer() {
     _timer?.cancel();
-    _secondsRemaining = 10;
+    _secondsRemaining = 15;
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining <= 0) {

@@ -202,6 +202,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
               children: [
                 TextField(
                   controller: _team1Controller,
+                  maxLength: 20,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     labelText: "Team 1",
@@ -214,10 +215,18 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                       borderSide: BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
+                    counterStyle: TextStyle(
+                      color:
+                          Colors.white, // Change the color of the counter here
+                      fontWeight:
+                          FontWeight
+                              .bold, // You can also customize other text styles
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  maxLength: 20,
                   controller: _team2Controller,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
@@ -230,6 +239,13 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    counterStyle: TextStyle(
+                      color:
+                          Colors.white, // Change the color of the counter here
+                      fontWeight:
+                          FontWeight
+                              .bold, // You can also customize other text styles
                     ),
                   ),
                 ),
