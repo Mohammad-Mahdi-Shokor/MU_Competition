@@ -140,6 +140,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
               children: [
                 TextField(
                   controller: _UserNameController,
+                  maxLength: 14,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     labelText: "UserName",
@@ -151,6 +152,13 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    counterStyle: TextStyle(
+                      color:
+                          Colors.white, // Change the color of the counter here
+                      fontWeight:
+                          FontWeight
+                              .bold, // You can also customize other text styles
                     ),
                   ),
                 ),

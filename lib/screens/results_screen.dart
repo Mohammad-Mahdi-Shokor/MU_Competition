@@ -80,6 +80,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                         fontSize: width > 700 ? 80 : 40,
                       ),
                     ),
+                SizedBox(height: 30),
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),

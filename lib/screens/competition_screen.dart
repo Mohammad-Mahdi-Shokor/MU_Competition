@@ -527,16 +527,25 @@ class _CompetitionScreenState extends State<CompetitionScreen>
               ),
             ),
           ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => StartScreen()),
+                    );
+                  },
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => StartScreen()),
-          );
-        },
-        child: const Icon(Icons.arrow_back),
       ),
     );
   }

@@ -358,8 +358,8 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Container(
-                      width: width > 600 ? 0.11 * width : 100,
-                      height: width > 600 ? 0.11 * width : 100,
+                      width: width > 600 ? 0.11 * width : 90,
+                      height: width > 600 ? 0.11 * width : 90,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: timerColor,
@@ -379,28 +379,34 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                   ),
 
                   buildScoreCard(userName, userScore, width),
-                  SizedBox(height: height * 0.05),
+                  SizedBox(height: width * 0.1),
                 ],
               ),
             ),
           ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => StartScreen()),
+                    );
+                  },
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => StartScreen()),
-          );
-        },
-        child: const Icon(Icons.arrow_back),
       ),
     );
   }
 
-  // ----------------------------------------------------------
-  // HELPERS
-  // ----------------------------------------------------------
   Widget buildScoreCard(String name, int score, double width) {
     return Container(
       padding: EdgeInsets.all(10),
@@ -416,7 +422,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
             child: Text(
               name,
               textAlign: TextAlign.center,
-              style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 20),
+              style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 25),
             ),
           ),
           SizedBox(
