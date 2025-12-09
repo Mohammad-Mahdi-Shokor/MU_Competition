@@ -75,35 +75,44 @@ class _Team1vsteam2screenState extends State<Team1vsteam2screen> {
           ),
           Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(height: height * 0.25),
                 Container(
                   decoration: BoxDecoration(
                     color:
                         DarkMode
                             ? Colors.black.withOpacity(0.4)
                             : Colors.white.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(50),
+                    borderRadius: BorderRadius.circular(100),
                     border: Border.all(
                       color: Colors.white.withOpacity(0.3),
                       width: DarkMode ? 3 : 0,
                     ),
                   ),
                   child: SizedBox(
-                    width: width > 700 ? 150 : 125,
-                    height: width > 700 ? 150 : 125,
+                    width: width > 700 ? 130 : 100,
+                    height: width > 700 ? 130 : 100,
                     child: Center(
                       child: Text(
                         "$_counter",
                         style: GoogleFonts.aBeeZee(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: width > 700 ? 90 : 60,
+                          fontSize: width > 700 ? 75 : 50,
                         ),
                       ),
                     ),
                   ),
                 ),
+              ],
+            ),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 SizedBox(height: 100),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
