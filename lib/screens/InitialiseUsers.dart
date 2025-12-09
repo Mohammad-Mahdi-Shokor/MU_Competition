@@ -1,4 +1,3 @@
-import 'package:codit_competition/screens/LoadScreen.dart';
 import 'package:codit_competition/screens/competition_screen_mobile.dart';
 import 'package:codit_competition/screens/team1VSteam2Screen.dart';
 import 'package:flutter/material.dart';
@@ -183,6 +182,10 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
+                    ),
+                    side: BorderSide(
+                      color: Colors.white, // border color
+                      width: 1, // border thickness
                     ),
                   ),
                   child: Text(
