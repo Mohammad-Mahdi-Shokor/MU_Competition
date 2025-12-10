@@ -22,7 +22,7 @@ class OneVOne extends StatefulWidget {
 }
 
 class _OneVOneState extends State<OneVOne> {
-  int _counter = 3;
+  int _counter = 10;
   Timer? _timer;
   late Club comp;
   bool DarkMode = true;

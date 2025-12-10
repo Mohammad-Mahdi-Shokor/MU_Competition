@@ -1,3 +1,4 @@
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/screens/competition_screen_mobile.dart';
 import 'package:codit_competition/screens/team1VSteam2Screen.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:lottie/lottie.dart';
 
 class TeamInputScreen extends StatefulWidget {
   const TeamInputScreen({super.key, required this.competition});
-  final String competition;
+  final Club competition;
   @override
   State<TeamInputScreen> createState() => _TeamInputScreenState();
 }

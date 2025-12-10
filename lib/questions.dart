@@ -47,18 +47,18 @@ List<List<String>> backupAnswers = [
 List<String> csQuestions = [
   // Medium level
   "Why keep class attributes private?",
-  // "Why use const in JavaScript?",
-  // "Why choose a CSS class over an ID?",
-  // "Why split code into small functions?",
-  // "What does a constructor do?",
-  // "Why is === safer than ==?",
-  // // Hard level
-  // "Why is composition flexible?",
-  // "Why prefer addEventListener()?",
-  // "Why does Flexbox help alignment?",
-  // "Why use method overriding?",
-  // "What does this refer to in JS?",
-  // "Why use position: absolute;?",
+  "Why use const in JavaScript?",
+  "Why choose a CSS class over an ID?",
+  "Why split code into small functions?",
+  "What does a constructor do?",
+  "Why is === safer than ==?",
+  // Hard level
+  "Why is composition flexible?",
+  "Why prefer addEventListener()?",
+  "Why does Flexbox help alignment?",
+  "Why use method overriding?",
+  "What does this refer to in JS?",
+  "Why use position: absolute;?",
 ];
 
 List<List<String>> csAnswers = [
@@ -69,33 +69,33 @@ List<List<String>> csAnswers = [
     "To avoid constructors",
     "To speed up programs",
   ],
-  // ["Stops reassignment", "Improves speed", "Converts values", "Makes globals"],
-  // [
-  //   "Classes can repeat",
-  //   "IDs can’t style",
-  //   "Classes load faster",
-  //   "JS-only usage",
-  // ],
-  // ["Improves clarity", "Prevents crashes", "Removes variables", "Forces order"],
-  // [
-  //   "Sets initial values",
-  //   "Blocks inheritance",
-  //   "Deletes objects",
-  //   "Converts types",
-  // ],
-  // ["Checks type too", "Always true", "Converts types", "Only objects"],
-  // // Hard level
-  // ["Easier changes", "Blocks overrides", "File limits", "Saves memory"],
-  // ["Cleaner and flexible", "Removes old ones", "Buttons only", "Runs faster"],
-  // ["Adjusts spacing", "Stops resizing", "Removes margins", "Forces equal size"],
-  // [
-  //   "Customizes behavior",
-  //   "Prevents calls",
-  //   "Makes identical",
-  //   "Removes constructors",
-  // ],
-  // ["Calling object", "Parent class", "Temp storage", "Window object"],
-  // ["Precise placement", "Removes styles", "Centers items", "Auto-resizes"],
+  ["Stops reassignment", "Improves speed", "Converts values", "Makes globals"],
+  [
+    "Classes can repeat",
+    "IDs can’t style",
+    "Classes load faster",
+    "JS-only usage",
+  ],
+  ["Improves clarity", "Prevents crashes", "Removes variables", "Forces order"],
+  [
+    "Sets initial values",
+    "Blocks inheritance",
+    "Deletes objects",
+    "Converts types",
+  ],
+  ["Checks type too", "Always true", "Converts types", "Only objects"],
+  // Hard level
+  ["Easier changes", "Blocks overrides", "File limits", "Saves memory"],
+  ["Cleaner and flexible", "Removes old ones", "Buttons only", "Runs faster"],
+  ["Adjusts spacing", "Stops resizing", "Removes margins", "Forces equal size"],
+  [
+    "Customizes behavior",
+    "Prevents calls",
+    "Makes identical",
+    "Removes constructors",
+  ],
+  ["Calling object", "Parent class", "Temp storage", "Window object"],
+  ["Precise placement", "Removes styles", "Centers items", "Auto-resizes"],
 ];
 
 List<String> businessQuestions = [

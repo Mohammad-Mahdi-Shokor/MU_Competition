@@ -52,7 +52,7 @@ class _StartScreenState extends State<StartScreen>
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return width > 700
+    return width < 700
         ? MobileStartScreen()
         : AnimatedBuilder(
           animation: _controller,
@@ -105,10 +105,10 @@ class _StartScreenState extends State<StartScreen>
                       Spacer(),
 
                       Text(
-                        "Trivia Start Screen",
+                        "Code it X MUBC Trivia",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.aBeeZee(
-                          fontSize: width > 700 ? 70 : 35,
+                          fontSize: width > 700 ? 65 : 35,
                           color: Colors.white,
                         ),
                       ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/screens/result_screen_mobile.dart';
 import 'package:codit_competition/screens/mobile_start_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class CompetitionScreenMobile extends StatefulWidget {
     required this.competitionType,
     required this.userName,
   });
-  final String competitionType;
+  final Club competitionType;
   final String userName;
   @override
   State<CompetitionScreenMobile> createState() => _CompetitionScreenState();
@@ -34,7 +35,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
   int _secondsRemaining = 10;
   Timer? _timer;
   int currentTeam = 1;
-  Color timerColor = Colors.white.withOpacity(0.18);
+  Color timerColor = Colors.black.withOpacity(0.4);
   bool check = true;
   bool buttonsEnabled = false;
   String? selectedAnswer;
@@ -47,16 +48,16 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
 
     // Set questions and answers based on competition type
     question =
-        widget.competitionType == "Code it"
+        widget.competitionType == Club.Code_it
             ? csQuestions
-            : widget.competitionType == "Business Club"
+            : widget.competitionType == Club.MUBC
             ? businessQuestions
             : generalQuestions;
 
     answers =
-        widget.competitionType == "Code it"
+        widget.competitionType == Club.Code_it
             ? csAnswers
-            : widget.competitionType == "Business Club"
+            : widget.competitionType == Club.MUBC
             ? businessAnswers
             : generalAnswers;
 
@@ -85,7 +86,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
   // ----------------------------------------------------------
   void loadNextQuestion() {
     setState(() {
-      timerColor = Colors.white.withOpacity(0.18);
+      timerColor = Colors.black.withOpacity(0.4);
       selectedAnswer = null;
       buttonsEnabled = false;
     });
@@ -111,7 +112,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
 
         setState(() {
           currentTeam = currentTeam == 1 ? 2 : 1;
-          timerColor = Colors.white.withOpacity(0.18);
+          timerColor = Colors.black.withOpacity(0.4);
         });
 
         if (!mounted) return;
@@ -138,7 +139,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
           double t = (6 - _secondsRemaining) / 6; // goes from 0 → 1
           timerColor =
               Color.lerp(
-                Colors.white.withOpacity(0.18),
+                Colors.black.withOpacity(0.4),
                 const Color.fromARGB(255, 144, 33, 33),
                 t,
               )!;
@@ -275,8 +276,12 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
+                      color: Colors.black.withOpacity(0.4),
                       borderRadius: BorderRadius.circular(25),
+                      border: Border.all(
+                        color: Colors.white.withAlpha(70),
+                        width: 3,
+                      ),
                     ),
                     child: Text(
                       question[index],
@@ -319,7 +324,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                                             0.3,
                                           );
                                         }
-                                        return Colors.white.withOpacity(0.25);
+                                        return Colors.black.withOpacity(0.4);
                                       }),
                                   foregroundColor:
                                       MaterialStateProperty.resolveWith((
@@ -342,12 +347,17 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                                     buttonsEnabled
                                         ? () => answerQuestion(answer)
                                         : null,
-                                child: Text(
-                                  answer,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.aBeeZee(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: FittedBox(
+                                    child: Text(
+                                      answer,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.aBeeZee(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -417,6 +427,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
         // ignore: deprecated_member_use
         color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: Colors.white.withAlpha(70), width: 3),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

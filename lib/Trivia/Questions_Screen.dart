@@ -291,9 +291,6 @@ class _QuestionsScreenState extends State<QuestionsScreen>
           team2Score++;
           team2Color = Colors.green;
         }
-        if (widget.Draw) {
-          navigateToResults();
-        }
       } else {
         if (isTeam1) {
           team1Color = Colors.red;
@@ -305,6 +302,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
     await Future.delayed(const Duration(seconds: 2));
 
+    if (widget.Draw && isCorrect) {
+      navigateToResults();
+    }
     if (isCorrect || lastTeamAttempted != null) {
       // Move to next question
       index++;

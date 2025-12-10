@@ -1,3 +1,4 @@
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -79,7 +80,7 @@ class _MobileStartScreenState extends State<MobileStartScreen>
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: width > 700 ? height * 0.2 : height * 0.1),
+            SizedBox(height: width > 700 ? height * 0.2 : height * 0.08),
             SizedBox(
               width: 1000,
               child:
@@ -89,18 +90,18 @@ class _MobileStartScreenState extends State<MobileStartScreen>
                         children: [
                           teamButton(
                             context,
-                            "Code_it;",
-                            "assets/ComputerScience2.json",
-                            TeamInputScreen(competition: "Code it"),
+                            Club.Code_it,
+                            Lottie.asset("assets/ComputerScience2.json"),
+                            TeamInputScreen(competition: Club.Code_it),
 
                             width,
                           ),
                           const Spacer(),
                           teamButton(
                             context,
-                            "Business Club",
-                            "assets/Business.json",
-                            TeamInputScreen(competition: "Business Club"),
+                            Club.MUBC,
+                            Lottie.asset("assets/ComputerScience2.json"),
+                            TeamInputScreen(competition: Club.MUBC),
                             width,
                           ),
                         ],
@@ -111,18 +112,66 @@ class _MobileStartScreenState extends State<MobileStartScreen>
                         children: [
                           teamButton(
                             context,
-                            "Code_it;",
-                            "assets/ComputerScience2.json",
-                            TeamInputScreen(competition: "Code it"),
+                            Club.Code_it,
+                            Lottie.asset("assets/ComputerScience2.json"),
+                            TeamInputScreen(competition: Club.Code_it),
                             width,
                           ),
 
                           teamButton(
                             context,
-                            "Business Club",
-                            "assets/Business.json",
-                            TeamInputScreen(competition: "Business Club"),
+                            Club.MUBC,
+                            Lottie.asset("assets/Business.json"),
+                            TeamInputScreen(competition: Club.MUBC),
                             width,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            spacing: 9,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    width > 700 ? 150 : 60,
+                                  ),
+                                ),
+                                width: width > 700 ? 300 : 140,
+                                height: width > 700 ? 300 : 140,
+                                child: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return TeamInputScreen(
+                                            competition: Club.Mix,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  icon: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                      10,
+                                    ), // optional: rounded corners
+                                    child: Image.asset(
+                                      "assets/CSvsBusiness.png",
+                                      fit: BoxFit.fitHeight,
+                                      height:
+                                          200, // fills the square and crops if necessary
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                clubName[Club.Mix]!,
+                                style: GoogleFonts.aBeeZee(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width > 700 ? 30 : 20,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -135,8 +184,8 @@ class _MobileStartScreenState extends State<MobileStartScreen>
 
   Column teamButton(
     BuildContext context,
-    String title,
-    String asset,
+    Club title,
+    Widget image,
     Widget target,
     double width,
   ) {
@@ -149,8 +198,8 @@ class _MobileStartScreenState extends State<MobileStartScreen>
             borderRadius: BorderRadius.circular(width > 700 ? 150 : 60),
             border: Border.all(color: Colors.white, width: 5),
           ),
-          width: width > 700 ? 300 : 150,
-          height: width > 700 ? 300 : 150,
+          width: width > 700 ? 300 : 140,
+          height: width > 700 ? 300 : 140,
           child: IconButton(
             onPressed: () {
               Navigator.push(
@@ -162,11 +211,11 @@ class _MobileStartScreenState extends State<MobileStartScreen>
                 ),
               );
             },
-            icon: Lottie.asset(asset),
+            icon: image,
           ),
         ),
         Text(
-          title,
+          clubName[title]!,
           style: GoogleFonts.aBeeZee(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -177,3 +226,9 @@ class _MobileStartScreenState extends State<MobileStartScreen>
     );
   }
 }
+
+Map<Club, String> clubName = {
+  Club.Code_it: "Code_it;",
+  Club.MUBC: "MUBC",
+  Club.Mix: "General Questions",
+};

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/screens/competition_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,7 +12,7 @@ class Loadscreen extends StatefulWidget {
     required this.team1,
     required this.team2,
   });
-  final String competition;
+  final Club competition;
   final String team1;
   final String team2;
   @override
@@ -21,7 +22,7 @@ class Loadscreen extends StatefulWidget {
 class _LoadscreenState extends State<Loadscreen> {
   int _counter = 5;
   Timer? _timer;
-  late String comp;
+  late Club comp;
   bool DarkMode = true;
   @override
   void initState() {
