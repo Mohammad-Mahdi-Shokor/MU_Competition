@@ -52,11 +52,16 @@ class _ResultsScreenState extends State<ResultsScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         children: [
-          Center(child: Lottie.asset("Confetti.json")),
+          Lottie.asset(
+            "assets/Background.json",
+            width: width,
+            height: height,
+            fit: BoxFit.cover,
+          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

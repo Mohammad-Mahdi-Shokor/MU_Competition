@@ -223,7 +223,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
               children: [
                 TextField(
                   controller: _team1Controller,
-                  maxLength: 20,
+                  maxLength: 14,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     labelText: "Team 1",
@@ -247,7 +247,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextField(
-                  maxLength: 20,
+                  maxLength: 14,
                   controller: _team2Controller,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(

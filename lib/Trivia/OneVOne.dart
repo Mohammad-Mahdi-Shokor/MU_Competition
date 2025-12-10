@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-class Team1vsteam2screen extends StatefulWidget {
-  const Team1vsteam2screen({
+class OneVOne extends StatefulWidget {
+  const OneVOne({
     super.key,
     required this.competition,
     required this.team1,
@@ -15,10 +15,10 @@ class Team1vsteam2screen extends StatefulWidget {
   final String team1;
   final String team2;
   @override
-  State<Team1vsteam2screen> createState() => _Team1vsteam2screenState();
+  State<OneVOne> createState() => _OneVOneState();
 }
 
-class _Team1vsteam2screenState extends State<Team1vsteam2screen> {
+class _OneVOneState extends State<OneVOne> {
   int _counter = 10;
   Timer? _timer;
   late String comp;
@@ -149,7 +149,7 @@ class _Team1vsteam2screenState extends State<Team1vsteam2screen> {
       decoration: BoxDecoration(
         color:
             DarkMode
-                ? Colors.black.withOpacity(0.4)
+                ? Colors.black.withOpacity(0.3)
                 : Colors.white.withOpacity(0.18),
         borderRadius: BorderRadius.circular(50),
         border: Border.all(

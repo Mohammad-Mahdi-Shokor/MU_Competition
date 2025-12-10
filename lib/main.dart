@@ -1,5 +1,6 @@
-import 'package:codit_competition/screens/start_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'Trivia/StartScreen.dart';
 
 void main() {
   runApp(const MainApp());

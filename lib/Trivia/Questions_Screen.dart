@@ -7,8 +7,8 @@ import 'package:lottie/lottie.dart';
 
 import '../questions.dart';
 
-class CompetitionScreen extends StatefulWidget {
-  const CompetitionScreen({
+class QuestionsScreen extends StatefulWidget {
+  const QuestionsScreen({
     super.key,
     required this.competitionType,
     required this.team1,
@@ -18,10 +18,10 @@ class CompetitionScreen extends StatefulWidget {
   final String team1;
   final String team2;
   @override
-  State<CompetitionScreen> createState() => _CompetitionScreenState();
+  State<QuestionsScreen> createState() => _QuestionsScreenState();
 }
 
-class _CompetitionScreenState extends State<CompetitionScreen>
+class _QuestionsScreenState extends State<QuestionsScreen>
     with SingleTickerProviderStateMixin {
   int index = 0;
 
@@ -48,7 +48,7 @@ class _CompetitionScreenState extends State<CompetitionScreen>
         : Colors.white.withOpacity(0.18);
   }
 
-  bool check = true; // for second team attempts
+  // bool check = true; // for second team attempts
   bool buttonsEnabled = false;
   String? selectedAnswer;
 
@@ -102,12 +102,6 @@ class _CompetitionScreenState extends State<CompetitionScreen>
       selectedAnswer = null;
       buttonsEnabled = false;
     });
-    if (!check) {
-      setState(() {
-        buttonsEnabled = true;
-      });
-      return;
-    }
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
       setState(() {
@@ -122,9 +116,6 @@ class _CompetitionScreenState extends State<CompetitionScreen>
   void startTimer() {
     _timer?.cancel();
     _secondsRemaining = 15;
-    if (check) {
-      _secondsRemaining = 18;
-    }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining <= 0) {
@@ -143,14 +134,6 @@ class _CompetitionScreenState extends State<CompetitionScreen>
 
         if (!mounted) return;
 
-        if (check) {
-          check = false;
-          loadNextQuestion();
-          startTimer();
-          return;
-        }
-
-        check = true;
         index++;
 
         if (index >= question.length) {
@@ -229,7 +212,6 @@ class _CompetitionScreenState extends State<CompetitionScreen>
       currentTeam = currentTeam == 1 ? 2 : 1;
       team1Color = Colors.yellow;
       team2Color = Colors.yellow;
-      check = true;
 
       loadNextQuestion();
       startTimer();
@@ -246,17 +228,6 @@ class _CompetitionScreenState extends State<CompetitionScreen>
     await Future.delayed(const Duration(seconds: 2));
 
     currentTeam = currentTeam == 1 ? 2 : 1;
-
-    if (check) {
-      check = false;
-      team1Color = Colors.yellow;
-      team2Color = Colors.yellow;
-      loadNextQuestion();
-      startTimer();
-      return;
-    }
-
-    check = true;
     index++;
 
     if (index >= question.length) {
@@ -471,14 +442,7 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                             ),
                             child: Row(
                               children: [
-                                currentTeam == 1
-                                    ? buildScoreCardThereTurn(
-                                      team1,
-                                      team1Score,
-                                      team1Color,
-                                      width,
-                                    )
-                                    : buildScoreCard(team1, team1Score, width),
+                                buildScoreCard(team1, team1Score, width),
 
                                 const Spacer(),
 
@@ -516,29 +480,14 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                                 ),
 
                                 const Spacer(),
-
-                                currentTeam == 2
-                                    ? buildScoreCardThereTurn(
-                                      team2,
-                                      team2Score,
-                                      team2Color,
-                                      width,
-                                    )
-                                    : buildScoreCard(team2, team2Score, width),
+                                buildScoreCard(team2, team2Score, width),
                               ],
                             ),
                           ),
                         )
                         : Row(
                           children: [
-                            currentTeam == 1
-                                ? buildScoreCardThereTurn(
-                                  team1,
-                                  team1Score,
-                                  team1Color,
-                                  width,
-                                )
-                                : buildScoreCard(team1, team1Score, width),
+                            buildScoreCard(team1, team1Score, width),
 
                             const Spacer(),
 
@@ -565,14 +514,7 @@ class _CompetitionScreenState extends State<CompetitionScreen>
 
                             const Spacer(),
 
-                            currentTeam == 2
-                                ? buildScoreCardThereTurn(
-                                  team2,
-                                  team2Score,
-                                  team2Color,
-                                  width,
-                                )
-                                : buildScoreCard(team2, team2Score, width),
+                            buildScoreCard(team2, team2Score, width),
                           ],
                         ),
                     SizedBox(height: height * 0.05),
@@ -684,79 +626,79 @@ class _CompetitionScreenState extends State<CompetitionScreen>
         );
   }
 
-  Widget buildScoreCardThereTurn(
-    String team,
-    int score,
-    Color color,
-    double width,
-  ) {
-    return width > 700
-        ? Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: color, width: 10),
-              color: ContainerColor,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18),
-                  child: FittedBox(
-                    child: Text(
-                      team,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.aBeeZee(
-                        color: Colors.white,
-                        fontSize: 35,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "$score",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.aBeeZee(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 80,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
-        : Container(
-          width: 100,
-          decoration: BoxDecoration(
-            border: Border.all(color: color, width: 6),
-            color: ContainerColor,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                team,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.aBeeZee(
-                  color: Colors.white,
-                  fontSize: width > 700 ? 35 : 20,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                "$score",
-                style: GoogleFonts.aBeeZee(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: width > 700 ? 80 : 40,
-                ),
-              ),
-            ],
-          ),
-        );
-  }
+  // Widget buildScoreCardThereTurn(
+  //   String team,
+  //   int score,
+  //   Color color,
+  //   double width,
+  // ) {
+  //   return width > 700
+  //       ? Expanded(
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //             border: Border.all(color: color, width: 10),
+  //             color: ContainerColor,
+  //             borderRadius: BorderRadius.circular(25),
+  //           ),
+  //           child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               Padding(
+  //                 padding: const EdgeInsets.symmetric(horizontal: 18),
+  //                 child: FittedBox(
+  //                   child: Text(
+  //                     team,
+  //                     textAlign: TextAlign.center,
+  //                     style: GoogleFonts.aBeeZee(
+  //                       color: Colors.white,
+  //                       fontSize: 35,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 5),
+  //               Text(
+  //                 "$score",
+  //                 textAlign: TextAlign.center,
+  //                 style: GoogleFonts.aBeeZee(
+  //                   color: Colors.white,
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 80,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       )
+  //       : Container(
+  //         width: 100,
+  //         decoration: BoxDecoration(
+  //           border: Border.all(color: color, width: 6),
+  //           color: ContainerColor,
+  //           borderRadius: BorderRadius.circular(25),
+  //         ),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Text(
+  //               team,
+  //               textAlign: TextAlign.center,
+  //               style: GoogleFonts.aBeeZee(
+  //                 color: Colors.white,
+  //                 fontSize: width > 700 ? 35 : 20,
+  //               ),
+  //             ),
+  //             const SizedBox(height: 5),
+  //             Text(
+  //               "$score",
+  //               style: GoogleFonts.aBeeZee(
+  //                 color: Colors.white,
+  //                 fontWeight: FontWeight.bold,
+  //                 fontSize: width > 700 ? 80 : 40,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  // }
 }

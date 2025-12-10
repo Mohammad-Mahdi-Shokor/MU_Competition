@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:codit_competition/screens/start_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +15,6 @@ class _CompetitionState extends State<Competition> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     activeScreen = StartScreen();
   }
@@ -24,4 +25,10 @@ class _CompetitionState extends State<Competition> {
   }
 }
 
-enum Screens { StartScreen, CompetitionScreen, ResultsScreen, LoadScreen }
+enum Screens {
+  StartScreen,
+  LeaderBoardScreen,
+  CompetitionScreen,
+  LoadScreen,
+  VSScreen,
+}
