@@ -1,79 +1,216 @@
+import 'dart:developer';
+
 import 'package:codit_competition/screens/mobile_start_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
-import 'package:lottie/lottie.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase/supabase.dart';
 
-class ResultsScreenMobile extends StatelessWidget {
+class ResultsScreenMobile extends StatefulWidget {
   const ResultsScreenMobile({
     super.key,
     required this.score,
     required this.name,
   });
+
   final int score;
   final String name;
+
+  @override
+  State<ResultsScreenMobile> createState() => _ResultsScreenMobileState();
+}
+
+class _ResultsScreenMobileState extends State<ResultsScreenMobile> {
+  final supabase = SupabaseClient(
+    'https://ilqgkzpjerddesusoakh.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlscWdrenBqZXJkZGVzdXNvYWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNDc1MjYsImV4cCI6MjA4MDYyMzUyNn0.J69owVnVbKuO8_IfLgWrauWfLZ3UaLVvYrTjSRO3lVA',
+  );
+
+  List<dynamic> topPlayers = [];
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _saveAndLoad();
+  }
+
+  /// 🔥 FIRST insert → THEN load top 10
+  Future<void> _saveAndLoad() async {
+    await _addContestant();
+    await _loadTopTen();
+  }
+
+  /// 🔥 Insert new contestant
+  Future<void> _addContestant() async {
+    try {
+      await supabase.from('Contestants').insert({
+        'Name': widget.name,
+        'Score': widget.score,
+      });
+
+      log("Contestant added successfully!");
+    } catch (e) {
+      print("Error inserting contestant: $e");
+    }
+  }
+
+  /// 🔥 Load top 10 from Supabase
+  Future<void> _loadTopTen() async {
+    try {
+      final response = await supabase
+          .from('Contestants')
+          .select()
+          .order('Score', ascending: false)
+          .limit(10);
+
+      setState(() {
+        topPlayers = response;
+        loading = false;
+      });
+    } catch (e) {
+      log("Error loading leaderboard: $e");
+      setState(() => loading = false);
+    }
+  }
+
+  /// 🥇🥈🥉 Medal based on rank
+  Widget _medal(int index) {
+    if (index == 0) {
+      return const Text("🥇", style: TextStyle(fontSize: 26));
+    } else if (index == 1) {
+      return const Text("🥈", style: TextStyle(fontSize: 26));
+    } else if (index == 2) {
+      return const Text("🥉", style: TextStyle(fontSize: 26));
+    }
+    return Text(
+      "${index + 1}.",
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Stack(
-        children: [
-          Center(child: Lottie.asset("Confetti.json")),
-          Center(
-            child: Column(
-              spacing: 20,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Congrats, $name your score is : $score",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.aBeeZee(
-                    color: Colors.black,
 
-                    fontWeight: FontWeight.bold,
-                    fontSize: width > 700 ? 80 : 40,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color.fromARGB(255, 5, 59, 104),
-                        Colors.blue,
-                      ],
+    return Scaffold(
+      body:
+          loading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                children: [
+                  const SizedBox(height: 60),
+
+                  /// 🔥 TITLE
+                  Text(
+                    "Top Contestants",
+                    style: GoogleFonts.aBeeZee(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: width > 700 ? 60 : 34,
                     ),
                   ),
-                  child: ElevatedButton(
+
+                  const SizedBox(height: 20),
+
+                  /// 🔥 Leaderboard List
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: topPlayers.length,
+                      itemBuilder: (context, index) {
+                        final player = topPlayers[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 20,
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color.fromARGB(255, 5, 59, 104),
+                                  Colors.blue,
+                                ],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.15),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                /// 🥇 Medal or numbering
+                                Row(
+                                  children: [
+                                    _medal(index),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      player['Name'],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                Text(
+                                  player['Score'].toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// 🔙 Back Button
+                  ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      padding: EdgeInsets.symmetric(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 30,
                         vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MobileStartScreen(),
+                          builder: (context) => const MobileStartScreen(),
                         ),
                       );
                     },
-                    child: Text(
+                    child: const Text(
                       "Go back to start",
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+
+                  const SizedBox(height: 40),
+                ],
+              ),
     );
   }
 }

@@ -436,7 +436,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
             child: Text(
               name,
               textAlign: TextAlign.center,
-              style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 25),
+              style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 16),
             ),
           ),
           SizedBox(
