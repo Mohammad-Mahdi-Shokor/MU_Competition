@@ -29,7 +29,7 @@ class Onevoneresults extends StatefulWidget {
 }
 
 class _OnevoneresultsState extends State<Onevoneresults> {
-  int _counter = 2;
+  int _counter = 5;
   Timer? _timer;
   late List<Team> teams;
   bool darkMode = true;
@@ -124,7 +124,7 @@ class _OnevoneresultsState extends State<Onevoneresults> {
                         darkMode
                             ? Colors.black.withOpacity(0.4)
                             : Colors.white.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(100),
+                    borderRadius: BorderRadius.circular(150),
                     border: Border.all(
                       color: Colors.white.withOpacity(0.3),
                       width: darkMode ? 3 : 0,
@@ -160,27 +160,43 @@ class _OnevoneresultsState extends State<Onevoneresults> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TeamsContainer(width, widget.team1),
+                      SizedBox(
+                        width: 400,
+                        child: TeamsContainer(width, widget.team1),
+                      ),
                       SizedBox(width: 30),
-                      Text(
-                        "${widget.team1Score}",
-                        style: GoogleFonts.aBeeZee(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: width > 700 ? 110 : 90,
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 3,
+                          ),
+                        ),
+                        child: SizedBox(
+                          width: width > 700 ? 200 : 125,
+                          height: 100,
+                          child: Center(
+                            child: FittedBox(
+                              child: Text(
+                                " ${widget.team1Score}  :  ${widget.team2Score} ",
+                                style: GoogleFonts.aBeeZee(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width > 700 ? 100 : 90,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(width: 30),
-                      Text(
-                        "${widget.team2Score}",
-                        style: GoogleFonts.aBeeZee(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: width > 700 ? 110 : 90,
-                        ),
+                      SizedBox(
+                        width: 400,
+                        child: TeamsContainer(width, widget.team2),
                       ),
-                      SizedBox(width: 30),
-                      TeamsContainer(width, widget.team2),
                     ],
                   ),
                 ),
@@ -194,7 +210,7 @@ class _OnevoneresultsState extends State<Onevoneresults> {
 
   Container TeamsContainer(double width, String teamName) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 40),
       decoration: BoxDecoration(
         color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(50),
@@ -210,7 +226,7 @@ class _OnevoneresultsState extends State<Onevoneresults> {
               style: GoogleFonts.aBeeZee(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: width > 700 ? 100 : 90,
+                fontSize: 70,
               ),
             ),
           ),

@@ -94,7 +94,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
     )..repeat(reverse: true);
 
     loadNextQuestion();
-    startTimer();
+    startTimer(reset: true);
   }
 
   // ----------------------------------------------------------
@@ -116,9 +116,11 @@ class _QuestionsScreenState extends State<QuestionsScreen>
   // ----------------------------------------------------------
   // FIXED TIMER
   // ----------------------------------------------------------
-  void startTimer() {
+  void startTimer({bool reset = false}) {
     _timer?.cancel();
-    _secondsRemaining = 15;
+    if (reset) {
+      _secondsRemaining = 15;
+    }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining <= 0) {
@@ -168,97 +170,173 @@ class _QuestionsScreenState extends State<QuestionsScreen>
     });
   }
 
+  String? lastTeamAttempted; // track who tried first
+
   // ----------------------------------------------------------
   // ANSWER LOGIC
   // ----------------------------------------------------------
-  void answerQuestion(String answer) async {
-    if (_secondsRemaining == 0) return;
+  // tracks which team already tried this question
 
-    _timer?.cancel();
+  void answerQuestion(String answer) async {
+    if (_secondsRemaining == 0 || !mounted) return;
+
+    _timer?.cancel(); // pause timer
+
+    // Ask which team answered
+    String? teamSelected = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        // Colors and style
+        Color dialogBackground = Colors.black.withOpacity(0.9);
+        Color buttonColor = Colors.blueAccent;
+        Color cancelColor = Colors.redAccent;
+        TextStyle buttonTextStyle = GoogleFonts.aBeeZee(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        );
+
+        // Helper to build styled buttons
+        Widget teamButton(String team) {
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: buttonColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+            onPressed: () => Navigator.pop(context, team),
+            child: Text(team, style: buttonTextStyle),
+          );
+        }
+
+        return AlertDialog(
+          backgroundColor: dialogBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          title: Text(
+            "Which team answered?",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.aBeeZee(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
+          content: Text(
+            "Select the team that answered this question.",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.aBeeZee(color: Colors.white70, fontSize: 18),
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 10,
+              children: [
+                if (lastTeamAttempted == null) ...[
+                  teamButton(widget.team1),
+                  teamButton(widget.team2),
+                ] else ...[
+                  // Second attempt: only show the team that didn't answer yet
+                  teamButton(
+                    lastTeamAttempted == widget.team1
+                        ? widget.team2
+                        : widget.team1,
+                  ),
+                ],
+                // Cancel button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: cancelColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context, null),
+                  child: Text("Cancel", style: buttonTextStyle),
+                ),
+              ],
+            ),
+            // First attempt: show both teams
+          ],
+        );
+      },
+    );
+
+    if (teamSelected == null) {
+      startTimer(); // resume if dismissed
+      return;
+    }
+
+    bool isTeam1 = teamSelected == widget.team1;
+    bool isCorrect = answer == answers[index][0];
 
     setState(() {
       selectedAnswer = answer;
-      buttonsEnabled = false;
-    });
-
-    // Correct answer is always the first in the original answers list
-    bool isCorrect = answer == answers[index][0];
-
-    if (isCorrect) {
-      // Update team score and color
-      if (currentTeam == 1) {
-        team1Score++;
-        team1Color = Colors.green;
+      if (isCorrect) {
+        // correct: increment score
+        if (isTeam1) {
+          team1Score++;
+          team1Color = Colors.green;
+        } else {
+          team2Score++;
+          team2Color = Colors.green;
+        }
       } else {
-        team2Score++;
-        team2Color = Colors.green;
+        // wrong: show red
+        if (isTeam1) {
+          team1Color = Colors.red;
+        } else {
+          team2Color = Colors.red;
+        }
       }
-
-      await Future.delayed(const Duration(seconds: 2));
-
-      index++;
-
-      if (index >= question.length) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => Onevoneresults(
-                  team1: team1,
-                  competition: widget.competitionType,
-                  team2: team2,
-                  team1Score: team1Score,
-                  team2Score: team2Score,
-                  teams: widget.teams,
-                ),
-          ),
-        );
-        return;
-      }
-
-      currentTeam = currentTeam == 1 ? 2 : 1;
-      team1Color = Colors.yellow;
-      team2Color = Colors.yellow;
-
-      loadNextQuestion();
-      startTimer();
-      return;
-    }
-
-    // WRONG ANSWER
-    if (currentTeam == 1) {
-      team1Color = Colors.red;
-    } else {
-      team2Color = Colors.red;
-    }
+    });
 
     await Future.delayed(const Duration(seconds: 2));
 
-    currentTeam = currentTeam == 1 ? 2 : 1;
-    index++;
+    if (isCorrect || lastTeamAttempted != null) {
+      // either correct answer or second team already tried => next question
+      index++;
+      lastTeamAttempted = null;
+      team1Color = Colors.yellow;
+      team2Color = Colors.yellow;
+      selectedAnswer = null;
 
-    if (index >= question.length) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder:
-              (context) => Onevoneresults(
-                team1: team1,
-                competition: widget.competitionType,
-                team2: team2,
-                team1Score: team1Score,
-                team2Score: team2Score,
-                teams: widget.teams,
-              ),
-        ),
-      );
-      return;
+      if (index >= question.length) {
+        navigateToResults();
+        return;
+      }
+
+      loadNextQuestion();
+      startTimer(reset: true);
+    } else {
+      // first team wrong, let other team try
+      lastTeamAttempted = teamSelected;
+      team1Color = Colors.yellow;
+      team2Color = Colors.yellow;
+      selectedAnswer = null;
+      buttonsEnabled = true;
+      startTimer();
     }
+  }
 
-    team1Color = Colors.yellow;
-    team2Color = Colors.yellow;
-    loadNextQuestion();
-    startTimer();
+  void navigateToResults() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => Onevoneresults(
+              team1: team1,
+              competition: widget.competitionType,
+              team2: team2,
+              team1Score: team1Score,
+              team2Score: team2Score,
+              teams: widget.teams,
+            ),
+      ),
+    );
   }
 
   @override

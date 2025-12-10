@@ -131,7 +131,7 @@ class _OneVOneState extends State<OneVOne> {
                         style: GoogleFonts.aBeeZee(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: width > 700 ? 110 : 90,
+                          fontSize: 140,
                         ),
                       ),
                       SizedBox(width: 150),
@@ -171,7 +171,7 @@ class _OneVOneState extends State<OneVOne> {
               style: GoogleFonts.aBeeZee(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: width > 700 ? 100 : 90,
+                fontSize: 70,
               ),
             ),
           ),
