@@ -17,10 +17,10 @@ class _StartScreenState extends State<StartScreen>
   late Animation<Color?> _colorAnimation1;
   late Animation<Color?> _colorAnimation2;
   List<Team> teams = [
-    Team(["", "", "", ""], "The Debuggers", Club.Code_it, 0),
-    Team(["", "", "", ""], "Sterben", Club.Code_it, 0),
-    Team(["", "", "", ""], "The Clever Crew", Club.MUBC, 0),
-    Team(["", "", "", ""], "Dahye Team", Club.MUBC, 0),
+    Team(["", "", "", ""], "Team1", Club.Code_it, 0),
+    Team(["", "", "", ""], "Team2", Club.Code_it, 0),
+    Team(["", "", "", ""], "Team3", Club.MUBC, 0),
+    Team(["", "", "", ""], "Team4", Club.MUBC, 0),
   ];
   @override
   void initState() {

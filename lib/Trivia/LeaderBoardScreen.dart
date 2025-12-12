@@ -214,6 +214,7 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                     teams: teams,
                   ),
               width,
+              round == 3,
             ),
           ),
         ],
@@ -284,14 +285,25 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
     );
   }
 
-  Column StartTrivia(BuildContext context, Widget target, double width) {
+  Column StartTrivia(
+    BuildContext context,
+    Widget target,
+    double width,
+    bool last,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(width > 700 ? 150 : 60),
-            border: Border.all(color: Colors.white, width: 5),
+            border: Border.all(
+              color:
+                  last
+                      ? const Color.fromARGB(0, 255, 255, 255).withAlpha(0)
+                      : Colors.white,
+              width: 5,
+            ),
           ),
           width: 100,
           height: 100,
@@ -306,7 +318,14 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                 ),
               );
             },
-            icon: Icon(Icons.play_arrow, size: 70, color: Colors.white),
+            icon: Icon(
+              Icons.play_arrow,
+              size: 70,
+              color:
+                  last
+                      ? const Color.fromARGB(0, 255, 255, 255).withAlpha(0)
+                      : Colors.white,
+            ),
           ),
         ),
       ],
