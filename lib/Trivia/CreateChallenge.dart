@@ -1,4 +1,6 @@
 import 'package:codit_competition/Trivia/InitialiseUsers.dart';
+import 'package:codit_competition/Trivia/teams.dart';
+import 'package:codit_competition/screens/InitialiseUsers.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -28,7 +30,6 @@ class _CreatechallengeState extends State<Createchallenge> {
   }
 
   Future<void> _saveTeams() async {
-    bool temp = false;
     ChallengeName = _challengeNameController.text.trim();
     if (ChallengeName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +83,13 @@ class _CreatechallengeState extends State<Createchallenge> {
       context,
       MaterialPageRoute(
         builder: (ctx) {
-          return TeamInputScreenWeb();
+          return size < 4
+              ? TeamInputScreen(
+                competition: Club.Code_it,
+                size: size,
+                Background: ChosenBackground,
+              )
+              : TeamInputScreenWeb(size: size);
         },
       ),
     );
@@ -96,7 +103,6 @@ class _CreatechallengeState extends State<Createchallenge> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     ChosenBackground = backgroundSource[0];
   }
@@ -133,9 +139,9 @@ class _CreatechallengeState extends State<Createchallenge> {
               color: containerColor,
               borderRadius: BorderRadius.circular(50),
             ),
-            width: width > 700 ? 600 : 300,
+            width: width > 700 ? 500 : 300,
             child: Column(
-              spacing: 20,
+              spacing: 10,
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
@@ -162,6 +168,7 @@ class _CreatechallengeState extends State<Createchallenge> {
                     ),
                   ),
                 ),
+                Divider(color: Colors.white),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -190,7 +197,7 @@ class _CreatechallengeState extends State<Createchallenge> {
                             color: Colors.white,
                           ),
                           items:
-                              [1, 2, 4, 8].map((teamSize) {
+                              [1, 2, 4].map((teamSize) {
                                 return DropdownMenuItem<int>(
                                   value: teamSize,
                                   child: Text(
@@ -210,7 +217,7 @@ class _CreatechallengeState extends State<Createchallenge> {
                     ),
                   ],
                 ),
-                SizedBox(height: 5),
+                Divider(color: Colors.white),
                 singleChoiceQuestion(width, height),
                 ElevatedButton(
                   onPressed: _saveTeams,

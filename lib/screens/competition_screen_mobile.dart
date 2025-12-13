@@ -13,9 +13,11 @@ class CompetitionScreenMobile extends StatefulWidget {
     super.key,
     required this.competitionType,
     required this.userName,
+    this.Background = "assets/Background.json",
   });
   final Club competitionType;
   final String userName;
+  final String Background;
   @override
   State<CompetitionScreenMobile> createState() => _CompetitionScreenState();
 }
@@ -232,7 +234,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
       body: Stack(
         children: [
           Lottie.asset(
-            "assets/Background.json",
+            widget.Background,
             width: width,
             height: height,
             fit: BoxFit.cover,

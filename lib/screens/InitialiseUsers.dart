@@ -6,8 +6,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 class TeamInputScreen extends StatefulWidget {
-  const TeamInputScreen({super.key, required this.competition});
+  const TeamInputScreen({
+    super.key,
+    required this.competition,
+    this.size = 2,
+    this.Background = "assets/Background.json",
+  });
   final Club competition;
+  final int size;
+  final String Background;
   @override
   State<TeamInputScreen> createState() => _TeamInputScreenState();
 }
@@ -96,7 +103,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
       body: Stack(
         children: [
           Lottie.asset(
-            "assets/Background.json",
+            widget.Background,
             width: width,
             height: height,
             fit: BoxFit.cover,

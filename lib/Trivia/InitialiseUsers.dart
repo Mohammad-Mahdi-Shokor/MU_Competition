@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 class TeamInputScreenWeb extends StatefulWidget {
-  const TeamInputScreenWeb({super.key});
+  const TeamInputScreenWeb({super.key, required this.size});
+  final int size;
   @override
   State<TeamInputScreenWeb> createState() => _TeamInputScreenStateWeb();
 }
@@ -12,7 +13,7 @@ class TeamInputScreenWeb extends StatefulWidget {
 class _TeamInputScreenStateWeb extends State<TeamInputScreenWeb> {
   final _UserNameController = TextEditingController();
   bool DarkMode = true;
-  int size = 4;
+  late int size;
   late List<String> teams;
   final List<TextEditingController> _teamsController = [
     TextEditingController(),
@@ -69,6 +70,7 @@ class _TeamInputScreenStateWeb extends State<TeamInputScreenWeb> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    size = widget.size;
     teams = [];
     for (int i = 0; i < size; i++) {
       teams.add("${i + 1}");

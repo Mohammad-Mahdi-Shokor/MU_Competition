@@ -100,7 +100,7 @@ class _MobileStartScreenState extends State<MobileStartScreen>
                           teamButton(
                             context,
                             Club.MUBC,
-                            Lottie.asset("assets/ComputerScience2.json"),
+                            Lottie.asset("assets/Business.json"),
                             TeamInputScreen(competition: Club.MUBC),
                             width,
                           ),
