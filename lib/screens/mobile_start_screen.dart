@@ -135,8 +135,8 @@ class _MobileStartScreenState extends State<MobileStartScreen>
                                     width > 700 ? 150 : 60,
                                   ),
                                 ),
-                                width: width > 700 ? 300 : 140,
-                                height: width > 700 ? 300 : 140,
+                                width: width > 700 ? 300 : 120,
+                                height: width > 700 ? 300 : 120,
                                 child: IconButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -196,10 +196,10 @@ class _MobileStartScreenState extends State<MobileStartScreen>
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(width > 700 ? 150 : 60),
-            border: Border.all(color: Colors.white, width: 5),
+            border: Border.all(color: Colors.white, width: width > 700 ? 5 : 2),
           ),
-          width: width > 700 ? 300 : 140,
-          height: width > 700 ? 300 : 140,
+          width: width > 700 ? 300 : 120,
+          height: width > 700 ? 300 : 120,
           child: IconButton(
             onPressed: () {
               Navigator.push(

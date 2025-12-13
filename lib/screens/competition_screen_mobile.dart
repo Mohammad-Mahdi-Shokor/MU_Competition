@@ -448,10 +448,16 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: Text(
-              name,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 16),
+            child: SizedBox(
+              width: width * 0.3,
+              height: width * 0.1,
+              child: FittedBox(
+                child: Text(
+                  name,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 16),
+                ),
+              ),
             ),
           ),
           SizedBox(

@@ -276,7 +276,7 @@ class _CreatechallengeState extends State<Createchallenge> {
                   height: height / 6,
                   duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color:
                         selectedOption == i
