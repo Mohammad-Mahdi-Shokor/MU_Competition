@@ -119,7 +119,7 @@ class _ResultsScreenMobileState extends State<ResultsScreenMobile> {
                       Text(
                         "Top Contestants",
                         style: GoogleFonts.aBeeZee(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: width > 700 ? 60 : 34,
                         ),
