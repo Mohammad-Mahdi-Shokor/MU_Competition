@@ -123,6 +123,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                       answers: widget.answers,
                     )
                     : Leaderboardscreen(
+                      custom: true,
                       teams: [
                         Team([], teams[0], widget.competition, 0),
                         Team([], teams[1], widget.competition, 0),
@@ -152,6 +153,21 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
             fit: BoxFit.cover,
           ),
           width > 700 ? TeamDataFillout(width) : UserNameDataFillout(width),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -87,6 +87,21 @@ class QuestionSourceScreen extends StatelessWidget {
               ),
             ),
           ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -319,7 +334,6 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
     // Collect all answers
     final List<List<String>> answers =
         _questions.map((q) => q.answers).toList();
-
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -347,6 +361,12 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
+              if (_questions.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Create at least one question")),
+                );
+                return;
+              }
               _continue();
             },
             child: Text("Continue"),

@@ -13,11 +13,13 @@ class Leaderboardscreen extends StatefulWidget {
     this.demo = false,
     this.questions = generalQuestions,
     this.answers = generalAnswers,
+    this.custom = false,
   });
   final List<Team> teams;
   final bool demo;
   final List<String> questions;
   final List<List<String>> answers;
+  final bool custom;
   @override
   State<Leaderboardscreen> createState() => _LeaderboardscreenState();
 }
@@ -211,7 +213,9 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                     questions: widget.questions,
                     answers: widget.answers,
                     competition:
-                        round == 0
+                        widget.custom
+                            ? Club.Custom
+                            : round == 0
                             ? Club.Code_it
                             : round == 1
                             ? Club.MUBC

@@ -226,7 +226,7 @@ class _DefaultCompetitionStartScreenState
       ),
       floatingActionButton: FloatingActionButton.large(
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {

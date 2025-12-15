@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:codit_competition/Trivia/oneVOneResults.dart';
+import 'package:codit_competition/Trivia/startScreen.dart';
 import 'package:codit_competition/Trivia/teams.dart';
+import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -375,6 +377,23 @@ class _QuestionsScreenState extends State<QuestionsScreen>
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return DefaultCompetitionStartScreen();
+                  },
+                ),
+              );
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           Lottie.asset(
@@ -658,8 +677,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder:
-                            (context) => Competitionstartscreen(teamsName: []),
+                        builder: (context) => DefaultCompetitionStartScreen(),
                       ),
                     );
                   },

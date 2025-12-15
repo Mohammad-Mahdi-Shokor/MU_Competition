@@ -1,4 +1,3 @@
-import 'package:codit_competition/Trivia/CompetitionStartScreen.dart';
 import 'package:codit_competition/Trivia/LeaderBoardScreen.dart';
 import 'package:codit_competition/Trivia/teams.dart';
 import 'package:flutter/material.dart';

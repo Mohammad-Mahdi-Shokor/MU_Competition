@@ -1,7 +1,4 @@
 import 'package:codit_competition/Trivia/CreateQuestions.dart';
-import 'package:codit_competition/Trivia/InitialiseUsers.dart';
-import 'package:codit_competition/Trivia/teams.dart';
-import 'package:codit_competition/screens/InitialiseUsers.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -59,7 +56,7 @@ class _CreatechallengeState extends State<Createchallenge> {
             SizedBox(width: 10),
             Expanded(
               child: Text(
-                "Challenge Name saved successfully!",
+                "Challenge Data saved successfully!",
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
@@ -80,7 +77,7 @@ class _CreatechallengeState extends State<Createchallenge> {
       ),
     );
 
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (ctx) {
