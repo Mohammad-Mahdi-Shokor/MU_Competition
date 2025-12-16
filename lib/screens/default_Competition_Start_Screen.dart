@@ -224,31 +224,62 @@ class _DefaultCompetitionStartScreenState
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.large(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return Createchallenge();
-              },
-            ),
-          );
-        },
-        backgroundColor: Colors.black.withOpacity(0.4),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 10,
-          children: [
-            Icon(Icons.edit, color: Colors.white),
-            Text(
-              "Create your own",
-              style: TextStyle(fontSize: 10, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
+      floatingActionButton:
+          width > 700
+              ? FloatingActionButton.large(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Createchallenge();
+                      },
+                    ),
+                  );
+                },
+                backgroundColor: Colors.black.withOpacity(0.4),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 10,
+                  children: [
+                    Icon(Icons.edit, color: Colors.white),
+                    Text(
+                      "Create your own",
+                      style: TextStyle(fontSize: 10, color: Colors.white),
+                    ),
+                  ],
+                ),
+              )
+              : FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Createchallenge();
+                      },
+                    ),
+                  );
+                },
+                backgroundColor: Colors.black.withOpacity(0.4),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 8,
+                    children: [
+                      Icon(Icons.edit, color: Colors.white),
+                      Text(
+                        "Create your own",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 8, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
     );
   }
 

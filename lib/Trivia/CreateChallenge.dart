@@ -121,6 +121,22 @@ class _CreatechallengeState extends State<Createchallenge> {
             fit: BoxFit.cover,
           ),
           TeamDataFillout(width, height),
+
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

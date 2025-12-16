@@ -355,8 +355,20 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text("Create Questions"),
+        title: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border.all(width: 2, color: Colors.black),
+            borderRadius: BorderRadius.circular(15),
+            color: Colors.white,
+          ),
+          child: const Text("Create Questions"),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
         actions: [
           ElevatedButton(
@@ -373,148 +385,181 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Center(
-          child: SizedBox(
-            width: width * 0.7,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /// Question Card
-                      _sectionCard(
-                        title: "Question",
-                        child: TextField(
-                          controller: _questionController,
-                          maxLines: 3,
-                          decoration: const InputDecoration(
-                            hintText: "Enter your question here...",
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      /// Answers Card
-                      _sectionCard(
-                        title: "Answers",
-                        subtitle: "First answer is the correct one",
-                        child: Column(
-                          children: List.generate(4, (i) {
-                            final isCorrect = i == 0;
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: TextField(
-                                controller: _answerControllers[i],
-                                decoration: InputDecoration(
-                                  labelText:
-                                      isCorrect
-                                          ? "Correct Answer"
-                                          : "Answer ${i + 1}",
-                                  prefixIcon: Icon(
-                                    isCorrect
-                                        ? Icons.check_circle
-                                        : Icons.circle_outlined,
-                                    color:
-                                        isCorrect ? Colors.green : Colors.grey,
+      body: Stack(
+        children: [
+          Lottie.asset(
+            widget.chosenBackground,
+            width: width,
+            height: height,
+            fit: BoxFit.cover,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 15),
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: SizedBox(
+                    width: width * 0.7,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// Question Card
+                              _sectionCard(
+                                title: "Question",
+                                child: TextField(
+                                  controller: _questionController,
+                                  maxLines: 3,
+                                  decoration: const InputDecoration(
+                                    hintText: "Enter your question here...",
+                                    border: OutlineInputBorder(),
                                   ),
-                                  border: const OutlineInputBorder(),
                                 ),
                               ),
-                            );
-                          }),
-                        ),
-                      ),
 
-                      const SizedBox(height: 20),
+                              const SizedBox(height: 20),
 
-                      /// Add Button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: _addQuestion,
-                          icon: const Icon(Icons.add),
-                          label: const Text("Add Question"),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            textStyle: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
+                              /// Answers Card
+                              _sectionCard(
+                                title: "Answers",
+                                subtitle: "First answer is the correct one",
+                                child: Column(
+                                  children: List.generate(4, (i) {
+                                    final isCorrect = i == 0;
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 12,
+                                      ),
+                                      child: TextField(
+                                        controller: _answerControllers[i],
+                                        decoration: InputDecoration(
+                                          labelText:
+                                              isCorrect
+                                                  ? "Correct Answer"
+                                                  : "Answer ${i + 1}",
+                                          prefixIcon: Icon(
+                                            isCorrect
+                                                ? Icons.check_circle
+                                                : Icons.circle_outlined,
+                                            color:
+                                                isCorrect
+                                                    ? Colors.green
+                                                    : Colors.grey,
+                                          ),
+                                          border: const OutlineInputBorder(),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              /// Add Button
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  onPressed: _addQuestion,
+                                  icon: const Icon(Icons.add, size: 20),
+                                  label: const Text(
+                                    "Add Question",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                    ),
+                                    textStyle: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 30),
+                        _questions.isEmpty
+                            ? Container()
+                            : Expanded(
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 30),
+
+                                  /// Added Questions Preview
+                                  if (_questions.isNotEmpty) ...[
+                                    Text(
+                                      "Added Questions (${_questions.length})",
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    ..._questions.map(
+                                      (q) => Card(
+                                        margin: const EdgeInsets.only(
+                                          bottom: 10,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          leading: const Icon(
+                                            Icons.help_outline,
+                                          ),
+                                          title: Text(q.question),
+                                          subtitle: Text(
+                                            "Correct: ${q.answers[0]}",
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+
+                                  const SizedBox(height: 20),
+
+                                  /// Preview Button
+                                  if (_questions.isNotEmpty)
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (_) => QuestionsPreviewScreen(
+                                                    questions: _questions,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text("Preview Questions"),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(width: 30),
-                _questions.isEmpty
-                    ? Container()
-                    : Expanded(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 30),
-
-                          /// Added Questions Preview
-                          if (_questions.isNotEmpty) ...[
-                            Text(
-                              "Added Questions (${_questions.length})",
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            ..._questions.map(
-                              (q) => Card(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: ListTile(
-                                  leading: const Icon(Icons.help_outline),
-                                  title: Text(q.question),
-                                  subtitle: Text("Correct: ${q.answers[0]}"),
-                                ),
-                              ),
-                            ),
-                          ],
-
-                          const SizedBox(height: 20),
-
-                          /// Preview Button
-                          if (_questions.isNotEmpty)
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (_) => QuestionsPreviewScreen(
-                                            questions: _questions,
-                                          ),
-                                    ),
-                                  );
-                                },
-                                child: const Text("Preview Questions"),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
+        ],
       ),
     );
   }
