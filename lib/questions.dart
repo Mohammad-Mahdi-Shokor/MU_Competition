@@ -1,4 +1,4 @@
-const List<String> generalQuestions = [
+const List<String> triviaGeneralQuestions = [
   "What is the difference between data and information?",
   "Who was the first Lebanese president?",
   "What is the capital of Ethiopia?",
@@ -6,11 +6,8 @@ const List<String> generalQuestions = [
   "What is the largest company in the world by market capitalization?",
   "Data stored on a blockchain can be edited or deleted once recorded?",
 ];
-List<String> DemoQuestions = ["What is one plus one"];
-List<List<String>> DemoAnswers = [
-  ["2", "3", "1", "IDK, I'll ask chatgpt"],
-];
-const List<List<String>> generalAnswers = [
+
+const List<List<String>> triviaGeneralAnswers = [
   [
     "Data is raw facts, information processes data",
     "Data is always text. Information is always numbers",
@@ -28,34 +25,14 @@ const List<List<String>> generalAnswers = [
     "Only administrators can edit it",
   ],
 ];
-List<String> backupQuestions = [
-  "Which university was originally known as the Syrian Protestant College?",
-  "What is the missing letter? A, C, F, J, O…",
-  "What is the name of the international assessment used to measure 15-year-old students’ performance in reading, mathematics, and science across countries?",
-  "Which Lebanese city is known for having the oldest continuously operating law school in the world during the Roman era?",
-];
 
-List<List<String>> backupAnswers = [
-  ["AUB", "USJ", "UL", "LAU"],
-  ["U", "T", "V", "W"],
-  [
-    "PISA (Programme for International Student Assessment)",
-    "TIMSS",
-    "SAT Junior",
-    "GPI (Global Performance Index)",
-  ],
-  ["Beirut", "Tyre", "Tripoli", "Baalbek"],
-];
-
-List<String> csQuestions = [
-  // Medium level
+const List<String> triviaCSQuestions = [
   "Why keep class attributes private?",
   "Why use const in JavaScript?",
   "Why choose a CSS class over an ID?",
   "Why split code into small functions?",
   "What does a constructor do?",
   "Why is === safer than ==?",
-  // Hard level
   "Why is composition flexible?",
   "Why prefer addEventListener()?",
   "Why does Flexbox help alignment?",
@@ -64,8 +41,7 @@ List<String> csQuestions = [
   "Why use position: absolute;?",
 ];
 
-List<List<String>> csAnswers = [
-  // Medium level
+const List<List<String>> triviaCSAnswers = [
   [
     "To protect and control data",
     "To highlight variables",
@@ -87,7 +63,6 @@ List<List<String>> csAnswers = [
     "Converts types",
   ],
   ["Checks type too", "Always true", "Converts types", "Only objects"],
-  // Hard level
   ["Easier changes", "Blocks overrides", "File limits", "Saves memory"],
   ["Cleaner and flexible", "Removes old ones", "Buttons only", "Runs faster"],
   ["Adjusts spacing", "Stops resizing", "Removes margins", "Forces equal size"],
@@ -101,7 +76,7 @@ List<List<String>> csAnswers = [
   ["Precise placement", "Removes styles", "Centers items", "Auto-resizes"],
 ];
 
-List<String> businessQuestions = [
+const List<String> triviaBusinessQuestions = [
   "If a company adopts centralized decision-making, where are most decisions made?",
   "What is a SWOT analysis used for?",
   "What does CEO stand for?",
@@ -111,12 +86,12 @@ List<String> businessQuestions = [
   "What is the purpose of financial forecasting?",
   "What is monopoly?",
   "What does BI stand for?",
-  "The company sells coffee and pastries. The price of coffee rises by 20% and as a result, the quantity demanded of coffee decreased by 15%, the quantity demanded of pastries increased by 10%. These two products are?",
-  "In double entry bookkeeping, if a company purchases equipment for cash, which accounts are affected?",
+  "These two products are?",
+  "In double entry bookkeeping, which accounts are affected?",
   "What does SQL stand for?",
 ];
 
-List<List<String>> businessAnswers = [
+const List<List<String>> triviaBusinessAnswers = [
   [
     "Top management",
     "Middle managers",
@@ -183,5 +158,159 @@ List<List<String>> businessAnswers = [
     "Standard quality logic",
     "System query level",
     "Scripted, quick language",
+  ],
+];
+const List<String> triviaBackupQuestions = [
+  "Which university was originally known as the Syrian Protestant College?",
+  "What is the missing letter? A, C, F, J, O…",
+  "What is the name of the international assessment used to measure 15-year-old students’ performance in reading, mathematics, and science across countries?",
+  "Which Lebanese city is known for having the oldest continuously operating law school in the world during the Roman era?",
+];
+
+const List<List<String>> triviaBackupAnswers = [
+  ["AUB", "USJ", "UL", "LAU"],
+  ["U", "T", "V", "W"],
+  [
+    "PISA (Programme for International Student Assessment)",
+    "TIMSS",
+    "SAT Junior",
+    "GPI (Global Performance Index)",
+  ],
+  ["Beirut", "Tyre", "Tripoli", "Baalbek"],
+];
+
+const List<String> backupQuestions = [
+  "Which fruit is red?",
+  "How many wheels does a bicycle have?",
+  "What is the first month of the year?",
+  "Which animal is known as man's best friend?",
+  "Which day comes after Monday?",
+  "Which device do you use to listen to music?",
+  "Which planet is closest to the Sun?",
+  "What color are bananas usually when ripe?",
+];
+
+const List<List<String>> backupAnswers = [
+  ["Apple", "Banana", "Orange", "Grapes"],
+  ["2", "3", "4", "1"],
+  ["January", "February", "March", "December"],
+  ["Dog", "Cat", "Bird", "Fish"],
+  ["Tuesday", "Wednesday", "Sunday", "Friday"],
+  ["Headphones", "Keyboard", "Mouse", "Printer"],
+  ["Mercury", "Venus", "Earth", "Mars"],
+  ["Yellow", "Green", "Red", "Blue"],
+];
+
+const List<String> triviaDemoQuestions = ["What is one plus one?"];
+
+const List<List<String>> triviaDemoAnswers = [
+  ["2", "3", "1", "IDK, I'll ask ChatGPT"],
+];
+
+const List<String> DemoQuestions = [
+  "What is 2 + 2?",
+  "Which device do we use to type on a computer?",
+  "What is the capital of Lebanon?",
+  "Which of these is a programming language?",
+  "Who manages a company?",
+  "Which animal says 'meow'?",
+  "Which season comes after summer?",
+  "What color are strawberries?",
+];
+
+const List<List<String>> DemoAnswers = [
+  ["4", "3", "5", "2"],
+  ["Keyboard", "Mouse", "Monitor", "Printer"],
+  ["Beirut", "Tripoli", "Sidon", "Byblos"],
+  ["Python", "Excel", "Windows", "Google"],
+  ["Manager", "Teacher", "Student", "Driver"],
+  ["Cat", "Dog", "Bird", "Cow"],
+  ["Autumn", "Spring", "Winter", "Summer"],
+  ["Red", "Yellow", "Green", "Blue"],
+];
+
+const List<String> generalQuestions = [
+  "What is the capital of Lebanon?",
+  "How many days are in a week?",
+  "Which device is used to make phone calls?",
+  "Which planet do humans live on?",
+  "What color is the sky on a clear day?",
+  "Which animal barks?",
+  "What do we use to write on paper?",
+  "Which season comes after winter?",
+];
+
+const List<List<String>> generalAnswers = [
+  ["Beirut", "Tripoli", "Sidon", "Byblos"],
+  ["7", "5", "10", "30"],
+  ["Phone", "Television", "Printer", "Router"],
+  ["Earth", "Mars", "Venus", "Jupiter"],
+  ["Blue", "Green", "Red", "Yellow"],
+  ["Dog", "Cat", "Bird", "Fish"],
+  ["Pen", "Keyboard", "Monitor", "Phone"],
+  ["Spring", "Summer", "Autumn", "Winter"],
+];
+
+const List<String> csQuestions = [
+  "What do computer science students study?",
+  "Which of these is a programming language?",
+  "What does a computer use to store data?",
+  "Which job is related to computer science?",
+  "What device is used to input data into a computer?",
+  "Which of these is a type of software?",
+  "What does HTML stand for?",
+  "Which device shows the output of a computer?",
+];
+
+const List<List<String>> csAnswers = [
+  ["Computers and software", "Only math", "Typing", "Drawing"],
+  ["Python", "Excel", "Windows", "Google"],
+  ["Memory", "Mouse", "Keyboard", "Screen"],
+  ["Software developer", "Doctor", "Teacher", "Chef"],
+  ["Keyboard", "Printer", "Router", "Speaker"],
+  ["Application", "Table", "Desk", "Folder"],
+  [
+    "HyperText Markup Language",
+    "HighTech Machine Language",
+    "Home Tool Main Link",
+    "Hyper Training Math Logic",
+  ],
+  ["Monitor", "Keyboard", "Mouse", "Printer"],
+];
+
+const List<String> businessQuestions = [
+  "What is business mainly about?",
+  "Who manages a company?",
+  "What do companies aim to make?",
+  "Which major focuses on managing organizations?",
+  "What is profit?",
+  "Which of these is a business activity?",
+  "What does CEO stand for?",
+  "What is the purpose of marketing?",
+];
+
+const List<List<String>> businessAnswers = [
+  [
+    "Buying and selling goods or services",
+    "Studying biology",
+    "Playing games",
+    "Traveling",
+  ],
+  ["Manager", "Customer", "Student", "Driver"],
+  ["Profit", "Homework", "Loss", "Penalties"],
+  ["Business management", "Physics", "History", "Biology"],
+  ["Money earned after expenses", "Homework", "Expenses", "Debt"],
+  ["Selling products", "Sleeping", "Watching movies", "Reading novels"],
+  [
+    "Chief Executive Officer",
+    "Central Efficiency Operator",
+    "Corporate Education Organizer",
+    "Chief Enterprise Organizer",
+  ],
+  [
+    "To promote products and reach customers",
+    "To study math",
+    "To write reports",
+    "To cook food",
   ],
 ];

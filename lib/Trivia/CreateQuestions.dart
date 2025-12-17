@@ -283,9 +283,14 @@ class PreMadeQuestions extends StatelessWidget {
 /// ------------------ MODEL ------------------
 class CustomQuestion {
   final String question;
-  final List<String> answers; // answers[0] is correct
+  final List<String> answers;
+  final int correctIndex; // <-- This indicates which answer is correct
 
-  CustomQuestion({required this.question, required this.answers});
+  CustomQuestion({
+    required this.question,
+    required this.answers,
+    required this.correctIndex,
+  });
 }
 
 /// ------------------ SCREEN 2 ------------------
@@ -295,8 +300,10 @@ class CustomQuestionsScreen extends StatefulWidget {
     required this.chosenBackground,
     required this.size,
   });
+
   final String chosenBackground;
   final int size;
+
   @override
   State<CustomQuestionsScreen> createState() => _CustomQuestionsScreenState();
 }
@@ -309,6 +316,14 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
   );
 
   final List<CustomQuestion> _questions = [];
+  int _selectedCorrectIndex = 0;
+
+  @override
+  void dispose() {
+    _questionController.dispose();
+    for (final c in _answerControllers) c.dispose();
+    super.dispose();
+  }
 
   void _addQuestion() {
     final question = _questionController.text.trim();
@@ -322,66 +337,70 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
     }
 
     setState(() {
-      _questions.add(CustomQuestion(question: question, answers: answers));
+      _questions.add(
+        CustomQuestion(
+          question: question,
+          answers: answers,
+          correctIndex: _selectedCorrectIndex,
+        ),
+      );
       _questionController.clear();
       for (final c in _answerControllers) {
         c.clear();
       }
+      _selectedCorrectIndex = 0;
     });
   }
 
   void _continue() {
-    // Collect all answers
+    if (_questions.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Create at least one question")),
+      );
+      return;
+    }
+
     final List<List<String>> answers =
         _questions.map((q) => q.answers).toList();
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (ctx) {
-          return TeamInputScreen(
-            competition: Club.Custom,
-            questions: _questions.map((q) => q.question).toList(),
-            answers: answers,
-            size: widget.size,
-            Background: widget.chosenBackground,
-          );
-        },
+        builder:
+            (ctx) => TeamInputScreen(
+              competition: Club.Custom,
+              questions: _questions.map((q) => q.question).toList(),
+              answers: answers,
+              size: widget.size,
+              Background: widget.chosenBackground,
+            ),
       ),
     );
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Container(
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            border: Border.all(width: 2, color: Colors.black),
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.white,
-          ),
-          child: const Text("Create Questions"),
-        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        surfaceTintColor: Colors.transparent,
         centerTitle: true,
+        title: Text(
+          "Create Questions",
+          style: GoogleFonts.aBeeZee(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
         actions: [
           ElevatedButton(
-            onPressed: () {
-              if (_questions.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Create at least one question")),
-                );
-                return;
-              }
-              _continue();
-            },
-            child: Text("Continue"),
+            onPressed: _questions.isEmpty ? null : _continue,
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            child: const Text("Continue"),
           ),
         ],
       ),
@@ -389,182 +408,119 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
         children: [
           Lottie.asset(
             widget.chosenBackground,
-            width: width,
-            height: height,
+            width: double.infinity,
+            height: double.infinity,
             fit: BoxFit.cover,
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 15),
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Center(
-                  child: SizedBox(
-                    width: width * 0.7,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              /// Question Card
-                              _sectionCard(
-                                title: "Question",
-                                child: TextField(
-                                  controller: _questionController,
-                                  maxLines: 3,
-                                  decoration: const InputDecoration(
-                                    hintText: "Enter your question here...",
-                                    border: OutlineInputBorder(),
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(height: 20),
-
-                              /// Answers Card
-                              _sectionCard(
-                                title: "Answers",
-                                subtitle: "First answer is the correct one",
-                                child: Column(
-                                  children: List.generate(4, (i) {
-                                    final isCorrect = i == 0;
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: 12,
-                                      ),
-                                      child: TextField(
-                                        controller: _answerControllers[i],
-                                        decoration: InputDecoration(
-                                          labelText:
-                                              isCorrect
-                                                  ? "Correct Answer"
-                                                  : "Answer ${i + 1}",
-                                          prefixIcon: Icon(
-                                            isCorrect
-                                                ? Icons.check_circle
-                                                : Icons.circle_outlined,
-                                            color:
-                                                isCorrect
-                                                    ? Colors.green
-                                                    : Colors.grey,
-                                          ),
-                                          border: const OutlineInputBorder(),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
-
-                              const SizedBox(height: 20),
-
-                              /// Add Button
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton.icon(
-                                  onPressed: _addQuestion,
-                                  icon: const Icon(Icons.add, size: 20),
-                                  label: const Text(
-                                    "Add Question",
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14,
-                                    ),
-                                    textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: SizedBox(
+                width: width > 600 ? 600 : width * 0.9,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Question Input
+                    _sectionCard(
+                      title: "Question",
+                      child: TextField(
+                        controller: _questionController,
+                        maxLines: 3,
+                        decoration: const InputDecoration(
+                          hintText: "Enter your question here...",
+                          border: OutlineInputBorder(),
                         ),
-                        SizedBox(width: 30),
-                        _questions.isEmpty
-                            ? Container()
-                            : Expanded(
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 30),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
 
-                                  /// Added Questions Preview
-                                  if (_questions.isNotEmpty) ...[
-                                    Text(
-                                      "Added Questions (${_questions.length})",
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    ..._questions.map(
-                                      (q) => Card(
-                                        margin: const EdgeInsets.only(
-                                          bottom: 10,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            14,
-                                          ),
-                                        ),
-                                        child: ListTile(
-                                          leading: const Icon(
-                                            Icons.help_outline,
-                                          ),
-                                          title: Text(q.question),
-                                          subtitle: Text(
-                                            "Correct: ${q.answers[0]}",
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-
-                                  const SizedBox(height: 20),
-
-                                  /// Preview Button
-                                  if (_questions.isNotEmpty)
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (_) => QuestionsPreviewScreen(
-                                                    questions: _questions,
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                        child: const Text("Preview Questions"),
-                                      ),
-                                    ),
-                                ],
+                    // Answers Input
+                    _sectionCard(
+                      title: "Answers",
+                      subtitle: "First answer is the correct one",
+                      child: Column(
+                        children: List.generate(4, (i) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: TextField(
+                              controller: _answerControllers[i],
+                              decoration: InputDecoration(
+                                labelText:
+                                    i == 0
+                                        ? "Correct Answer"
+                                        : "Answer ${i + 1}",
+                                prefixIcon: Icon(
+                                  i == 0
+                                      ? Icons.check_circle
+                                      : Icons.circle_outlined,
+                                  color: i == 0 ? Colors.green : Colors.grey,
+                                ),
+                                border: const OutlineInputBorder(),
                               ),
                             ),
-                      ],
+                          );
+                        }),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+
+                    // Add Question Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _addQuestion,
+                        icon: const Icon(Icons.add),
+                        label: const Text(
+                          "Add Question",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Preview Button
+                    if (_questions.isNotEmpty)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => QuestionsPreviewScreen(
+                                      questions: _questions,
+                                    ),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: const Text(
+                            "Preview Questions",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  /// Reusable Section Card
   Widget _sectionCard({
     required String title,
     String? subtitle,

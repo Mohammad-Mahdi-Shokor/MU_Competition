@@ -30,7 +30,6 @@ class _DefaultCompetitionStartScreenState
       duration: const Duration(seconds: 6),
     )..repeat(reverse: true);
 
-    // Dark-themed colors
     _colorAnimation1 = ColorTween(
       begin: Colors.black,
       end: Colors.deepPurple.shade900,
@@ -63,8 +62,6 @@ class _DefaultCompetitionStartScreenState
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              // spacing: 20,
               children: [
                 Text(
                   "Competition Start Screen",
@@ -125,14 +122,11 @@ class _DefaultCompetitionStartScreenState
                                         );
                                       },
                                       icon: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                          10,
-                                        ), // optional: rounded corners
+                                        borderRadius: BorderRadius.circular(10),
                                         child: Image.asset(
                                           "assets/CSvsBusiness.png",
                                           fit: BoxFit.fitHeight,
-                                          height:
-                                              200, // fills the square and crops if necessary
+                                          height: 200,
                                         ),
                                       ),
                                     ),
@@ -194,14 +188,11 @@ class _DefaultCompetitionStartScreenState
                                         );
                                       },
                                       icon: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                          10,
-                                        ), // optional: rounded corners
+                                        borderRadius: BorderRadius.circular(10),
                                         child: Image.asset(
                                           "assets/CSvsBusiness.png",
                                           fit: BoxFit.fitHeight,
-                                          height:
-                                              200, // fills the square and crops if necessary
+                                          height: 200,
                                         ),
                                       ),
                                     ),
@@ -252,7 +243,7 @@ class _DefaultCompetitionStartScreenState
                 ),
               )
               : SizedBox(
-                height: 67, // 👈 increase size
+                height: 67, // 👈
                 width: 67,
                 child: FloatingActionButton(
                   onPressed: () {
