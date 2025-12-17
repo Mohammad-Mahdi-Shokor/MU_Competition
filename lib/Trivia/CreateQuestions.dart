@@ -400,7 +400,10 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
           ElevatedButton(
             onPressed: _questions.isEmpty ? null : _continue,
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-            child: const Text("Continue"),
+            child: const Text(
+              "Continue",
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -497,6 +500,7 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
                                 builder:
                                     (_) => QuestionsPreviewScreen(
                                       questions: _questions,
+                                      background: widget.chosenBackground,
                                     ),
                               ),
                             );
@@ -508,7 +512,7 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
                           child: const Text(
                             "Preview Questions",
                             style: TextStyle(fontSize: 18),
-                          ),
+                          ), // this one
                         ),
                       ),
                   ],
@@ -561,119 +565,146 @@ class _CustomQuestionsScreenState extends State<CustomQuestionsScreen> {
 /// ------------------ SCREEN 3 ------------------
 class QuestionsPreviewScreen extends StatelessWidget {
   final List<CustomQuestion> questions;
-
-  const QuestionsPreviewScreen({super.key, required this.questions});
+  final String background;
+  const QuestionsPreviewScreen({
+    super.key,
+    required this.questions,
+    required this.background,
+  });
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(title: const Text("Questions Preview"), centerTitle: true),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: questions.length,
-        itemBuilder: (context, index) {
-          final q = questions[index];
+      appBar: AppBar(
+        title: Text(
+          "Questions Preview",
+          style: GoogleFonts.aBeeZee(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: [
+          Lottie.asset(
+            background,
+            width: width,
+            height: height,
+            fit: BoxFit.cover,
+          ),
+          ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: questions.length,
+            itemBuilder: (context, index) {
+              final q = questions[index];
 
-          return Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Question Header
-                  Row(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.black,
-                        child: Text(
-                          "${index + 1}",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          q.question,
-                          style: GoogleFonts.aBeeZee(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Answers
-                  ...List.generate(q.answers.length, (i) {
-                    final isCorrect = i == 0;
-
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            isCorrect
-                                ? Colors.green.withOpacity(0.12)
-                                : Colors.grey.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isCorrect ? Colors.green : Colors.transparent,
-                          width: 1.2,
-                        ),
-                      ),
-                      child: Row(
+                      // Question Header
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            isCorrect
-                                ? Icons.check_circle
-                                : Icons.circle_outlined,
-                            size: 20,
-                            color: isCorrect ? Colors.green : Colors.grey,
+                          CircleAvatar(
+                            radius: 16,
+                            backgroundColor: Colors.black,
+                            child: Text(
+                              "${index + 1}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              q.answers[i],
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight:
-                                    isCorrect
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
+                              q.question,
+                              style: GoogleFonts.aBeeZee(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ],
                       ),
-                    );
-                  }),
-                ],
-              ),
-            ),
-          );
-        },
+
+                      const SizedBox(height: 16),
+
+                      // Answers
+                      ...List.generate(q.answers.length, (i) {
+                        final isCorrect = i == 0;
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isCorrect
+                                    ? Colors.green.withOpacity(0.12)
+                                    : Colors.grey.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color:
+                                  isCorrect ? Colors.green : Colors.transparent,
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                isCorrect
+                                    ? Icons.check_circle
+                                    : Icons.circle_outlined,
+                                size: 20,
+                                color: isCorrect ? Colors.green : Colors.grey,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  q.answers[i],
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight:
+                                        isCorrect
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

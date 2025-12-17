@@ -18,7 +18,7 @@ class _CreatechallengeState extends State<Createchallenge> {
   final List<String> backgroundSource = [
     "assets/Background.json",
     "assets/wavyLines.json",
-    "assets/darkgradient.json",
+    "assets/Background_shooting_star.json",
   ];
   late String ChosenBackground;
 
