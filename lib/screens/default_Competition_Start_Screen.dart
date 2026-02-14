@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import '../Trivia/CreateChallenge.dart';
-import 'InitialiseUsers.dart';
+// import 'InitialiseUsers.dart';
 
 class DefaultCompetitionStartScreen extends StatefulWidget {
   const DefaultCompetitionStartScreen({super.key});
@@ -19,8 +19,8 @@ class _DefaultCompetitionStartScreenState
     extends State<DefaultCompetitionStartScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<Color?> _colorAnimation1;
-  late Animation<Color?> _colorAnimation2;
+  // late Animation<Color?> _colorAnimation1;
+  // late Animation<Color?> _colorAnimation2;
 
   @override
   void initState() {
@@ -31,14 +31,14 @@ class _DefaultCompetitionStartScreenState
       duration: const Duration(seconds: 6),
     )..repeat(reverse: true);
 
-    _colorAnimation1 = ColorTween(
-      begin: Colors.black,
-      end: Colors.deepPurple.shade900,
-    ).animate(_controller);
-    _colorAnimation2 = ColorTween(
-      begin: Colors.indigo.shade900,
-      end: Colors.black87,
-    ).animate(_controller);
+    // _colorAnimation1 = ColorTween(
+    //   begin: Colors.black,
+    //   end: Colors.deepPurple.shade900,
+    // ).animate(_controller);
+    // _colorAnimation2 = ColorTween(
+    //   begin: Colors.indigo.shade900,
+    //   end: Colors.black87,
+    // ).animate(_controller);
   }
 
   @override

@@ -97,9 +97,12 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
     }
 
     if (hasEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Please fill all fields")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all fields"),
+          duration: Duration(seconds: 3),
+        ),
+      );
       return;
     }
 
@@ -288,7 +291,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
     return Center(
       child: Container(
         padding: const EdgeInsets.all(20),
-        width: width > 700 ? 400 : 300,
+        width: width > 700 ? 500 : 300,
         decoration: BoxDecoration(
           color: containerColor,
           borderRadius: BorderRadius.circular(50),

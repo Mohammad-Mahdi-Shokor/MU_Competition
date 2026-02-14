@@ -29,23 +29,26 @@ class OneVOne extends StatefulWidget {
 }
 
 class _OneVOneState extends State<OneVOne> {
-  int _counter = 10;
+  int _counter = 5;
   Timer? _timer;
   late Club comp;
+  bool countDownStarted = false;
   bool DarkMode = true;
   @override
   void initState() {
     super.initState();
-    _startTimer();
     comp = widget.competition;
   }
 
   void _startTimer() {
+    setState(() {
+      countDownStarted = true;
+    });
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_counter == 0) {
         _timer?.cancel();
         // Navigate to another screen
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder:
@@ -105,20 +108,30 @@ class _OneVOneState extends State<OneVOne> {
                     ),
                   ),
 
-                  child: SizedBox(
-                    width: width > 700 ? 130 : 100,
-                    height: width > 700 ? 130 : 100,
-                    child: Center(
-                      child: Text(
-                        "$_counter",
-                        style: GoogleFonts.aBeeZee(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: width > 700 ? 75 : 50,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child:
+                      countDownStarted
+                          ? SizedBox(
+                            width: width > 700 ? 130 : 100,
+                            height: width > 700 ? 130 : 100,
+                            child: Center(
+                              child: Text(
+                                "$_counter",
+                                style: GoogleFonts.aBeeZee(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width > 700 ? 75 : 50,
+                                ),
+                              ),
+                            ),
+                          )
+                          : IconButton(
+                            onPressed: _startTimer,
+                            icon: Icon(
+                              Icons.play_arrow,
+                              color: Colors.white,
+                              size: 114,
+                            ),
+                          ),
                 ),
               ],
             ),

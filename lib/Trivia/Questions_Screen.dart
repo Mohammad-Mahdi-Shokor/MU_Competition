@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:codit_competition/Trivia/LeaderBoardScreen.dart';
 import 'package:codit_competition/Trivia/oneVOneResults.dart';
-import 'package:codit_competition/Trivia/startScreen.dart';
 import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:flutter/material.dart';
@@ -8,12 +8,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import '../questions.dart';
-import 'CompetitionStartScreen.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({
     super.key,
-    required this.competitionType,
+    this.competitionType = Club.MUBC,
     required this.team1,
     required this.team2,
     required this.teams,
@@ -47,9 +46,11 @@ class _QuestionsScreenState extends State<QuestionsScreen>
   late String team2 = widget.team2;
   int team1Score = 0;
   int team2Score = 0;
-  int _secondsRemaining = 15;
+  int _secondsRemaining = 30;
   Timer? _timer;
   int currentTeam = 1;
+  bool _isHoveringOnTimer = false;
+  bool _isTimerPaused = false;
 
   // TEAM COLORS
   Color team1Color = Colors.white.withOpacity(0.3);
@@ -149,12 +150,16 @@ class _QuestionsScreenState extends State<QuestionsScreen>
   // FIXED TIMER
   // ----------------------------------------------------------
   void startTimer({bool reset = false}) {
+    if (_isTimerPaused) return; // Don't start timer if paused
+
     _timer?.cancel();
     if (reset) {
       _secondsRemaining = 25;
     }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_isTimerPaused) return; // Skip if paused
+
       if (_secondsRemaining <= 0) {
         timer.cancel();
 
@@ -199,6 +204,18 @@ class _QuestionsScreenState extends State<QuestionsScreen>
         _secondsRemaining--;
       });
     });
+  }
+
+  void resetQuestion() {
+    setState(() {
+      selectedAnswer = null;
+      buttonsEnabled = false;
+      NextQuestion = false;
+      team1Color = Colors.white.withOpacity(0.3);
+      team2Color = Colors.white.withOpacity(0.3);
+      _isTimerPaused = false; // Reset pause state
+    });
+    startTimer(reset: true);
   }
 
   String? lastTeamAttempted; // track who tried first
@@ -377,23 +394,23 @@ class _QuestionsScreenState extends State<QuestionsScreen>
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return DefaultCompetitionStartScreen();
-                  },
-                ),
-              );
-            },
-            icon: Icon(Icons.arrow_back),
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   actions: [
+      //     IconButton(
+      //       onPressed: () {
+      //         Navigator.pushReplacement(
+      //           context,
+      //           MaterialPageRoute(
+      //             builder: (context) {
+      //               return DefaultCompetitionStartScreen();
+      //             },
+      //           ),
+      //         );
+      //       },
+      //       icon: Icon(Icons.arrow_back),
+      //     ),
+      //   ],
+      // ),
       body: Stack(
         children: [
           Lottie.asset(
@@ -570,7 +587,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                                 buildScoreCard(team1, team1Score, width, 1),
 
                                 const Spacer(),
-
+                                // option1
                                 Container(
                                   decoration: BoxDecoration(
                                     color: ContainerColor,
@@ -583,45 +600,120 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                                   child: SizedBox(
                                     width: width > 600 ? 0.11 * width : 100,
                                     height: width > 600 ? 0.11 * width : 100,
-                                    child: Center(
-                                      child:
-                                          NextQuestion
-                                              ? IconButton(
-                                                icon: Icon(
-                                                  Icons.play_arrow,
-                                                  size: 100,
-                                                  color: Colors.white,
-                                                ),
-                                                onPressed: () {
-                                                  index++;
-
-                                                  if (index >=
-                                                      question.length) {
-                                                    navigateToResults();
-                                                    return;
-                                                  }
-
-                                                  // IMPORTANT FIX
-                                                  lastTeamAttempted = null;
-
-                                                  NextQuestion = false;
-                                                  loadNextQuestion();
-                                                  startTimer(reset: true);
-                                                },
-                                              )
-                                              : Text(
-                                                "$_secondsRemaining",
-                                                style: GoogleFonts.aBeeZee(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize:
-                                                      width > 700 ? 90 : 40,
-                                                ),
-                                              ),
+                                    child: Text(
+                                      "$_secondsRemaining",
+                                      style: GoogleFonts.aBeeZee(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: width > 700 ? 90 : 40,
+                                      ),
                                     ),
                                   ),
                                 ),
 
+                                //option2
+                                // IconButton(
+                                //   icon: Icon(
+                                //     Icons.refresh,
+                                //     color: Colors.white,
+                                //     size: 100,
+                                //   ),
+                                //   onPressed: () {
+                                //     setState(() {
+                                //       _isTimerPaused = false;
+                                //       _timer?.cancel();
+                                //       _secondsRemaining = 25;
+                                //       startTimer();
+                                //     });
+                                //   },
+                                // ),
+                                // SizedBox(width: 50),
+                                // Container(
+                                //   decoration: BoxDecoration(
+                                //     color: ContainerColor,
+                                //     borderRadius: BorderRadius.circular(50),
+                                //     border: Border.all(
+                                //       color: Colors.white.withOpacity(0.3),
+                                //       width: 1,
+                                //     ),
+                                //   ),
+                                //   child: SizedBox(
+                                //     width: width > 600 ? 0.11 * width : 100,
+                                //     height: width > 600 ? 0.11 * width : 100,
+                                //     child: MouseRegion(
+                                //       onEnter: (_) {
+                                //         setState(() {
+                                //           _isHoveringOnTimer = true;
+                                //         });
+                                //       },
+                                //       onExit: (_) {
+                                //         setState(() {
+                                //           _isHoveringOnTimer = false;
+                                //         });
+                                //       },
+                                //       child: Stack(
+                                //         alignment: Alignment.center,
+                                //         children: [
+                                //           if (_isHoveringOnTimer &&
+                                //               !NextQuestion)
+                                //             IconButton(
+                                //               icon: Icon(
+                                //                 _isTimerPaused
+                                //                     ? Icons.play_arrow
+                                //                     : Icons.pause,
+                                //                 color: Colors.white,
+                                //                 size: 100,
+                                //               ),
+                                //               onPressed: () {
+                                //                 setState(() {
+                                //                   _isTimerPaused =
+                                //                       !_isTimerPaused;
+                                //                   if (_isTimerPaused) {
+                                //                     _timer?.cancel();
+                                //                   } else {
+                                //                     startTimer();
+                                //                   }
+                                //                 });
+                                //               },
+                                //             )
+                                //           else
+                                //             Text(
+                                //               "$_secondsRemaining",
+                                //               style: GoogleFonts.aBeeZee(
+                                //                 color: Colors.white,
+                                //                 fontWeight: FontWeight.bold,
+                                //                 fontSize: width > 700 ? 90 : 40,
+                                //               ),
+                                //             ),
+                                //           // Hover Controls
+                                //         ],
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                // SizedBox(width: 50),
+                                // IconButton(
+                                //   icon: Icon(
+                                //     Icons.skip_next,
+                                //     size: 100,
+                                //     color: Colors.white,
+                                //   ),
+                                //   onPressed: () {
+                                //     index++;
+
+                                //     if (index >= question.length) {
+                                //       navigateToResults();
+                                //       return;
+                                //     }
+
+                                //     // IMPORTANT FIX
+                                //     lastTeamAttempted = null;
+
+                                //     NextQuestion = false;
+                                //     loadNextQuestion();
+                                //     startTimer(reset: true);
+                                //   },
+                                // ),
                                 const Spacer(),
                                 buildScoreCard(team2, team2Score, width, 2),
                               ],
@@ -677,7 +769,8 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => DefaultCompetitionStartScreen(),
+                        builder:
+                            (context) => Leaderboardscreen(teams: widget.teams),
                       ),
                     );
                   },
@@ -685,6 +778,104 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                 ),
               ),
             ],
+          ),
+          //option1
+          Positioned(
+            bottom: 0,
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.refresh, color: Colors.white, size: 100),
+                  onPressed: () {
+                    setState(() {
+                      _isTimerPaused = false;
+                      _timer?.cancel();
+                      _secondsRemaining = 25;
+                      startTimer();
+                    });
+                  },
+                ),
+                SizedBox(width: 50),
+                IconButton(
+                  icon: Icon(
+                    _isTimerPaused ? Icons.play_arrow : Icons.pause,
+                    color: Colors.white,
+                    size: 100,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isTimerPaused = !_isTimerPaused;
+                      if (_isTimerPaused) {
+                        _timer?.cancel();
+                      } else {
+                        startTimer();
+                      }
+                    });
+                  },
+                ),
+                // Container(
+                //   decoration: BoxDecoration(
+                //     color: ContainerColor,
+                //     borderRadius: BorderRadius.circular(50),
+                //     border: Border.all(
+                //       color: Colors.white.withOpacity(0.3),
+                //       width: 1,
+                //     ),
+                //   ),
+                //   child: MouseRegion(
+                //     onEnter: (_) {
+                //       setState(() {
+                //         _isHoveringOnTimer = true;
+                //       });
+                //     },
+                //     onExit: (_) {
+                //       setState(() {
+                //         _isHoveringOnTimer = false;
+                //       });
+                //     },
+                //     child: Stack(
+                //       alignment: Alignment.center,
+                //       children: [
+                //         if (_isHoveringOnTimer &&
+                //             !NextQuestion)
+
+                //         else
+                //           Text(
+                //             "$_secondsRemaining",
+                //             style: GoogleFonts.aBeeZee(
+                //               color: Colors.white,
+                //               fontWeight: FontWeight.bold,
+                //               fontSize: width > 700 ? 90 : 40,
+                //             ),
+                //           ),
+                //         // Hover Controls
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                SizedBox(width: 50),
+                IconButton(
+                  icon: Icon(Icons.skip_next, size: 100, color: Colors.white),
+                  onPressed: () {
+                    index++;
+
+                    if (index >= question.length) {
+                      navigateToResults();
+                      return;
+                    }
+
+                    // IMPORTANT FIX
+                    lastTeamAttempted = null;
+
+                    NextQuestion = false;
+                    loadNextQuestion();
+                    startTimer(reset: true);
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),
