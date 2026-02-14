@@ -54,7 +54,7 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
 
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 2),
       ),
     );
 

@@ -67,6 +67,50 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
   late AnimationController _controller;
 
+  void goToPreviousQuestion() {
+    // Don't go back if we're at the first question
+    if (index <= 0) {
+      // Optional: Show a snackbar or toast to indicate can't go back
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Already at the first question"),
+          duration: Duration(seconds: 1),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    // Cancel current timer
+    _timer?.cancel();
+
+    setState(() {
+      index--; // Decrement index to go to previous question
+
+      // Reset all states for the new question
+      selectedAnswer = null;
+      lastTeamAttempted = null;
+      NextQuestion = false;
+      buttonsEnabled = false;
+      team1Color = Colors.white.withOpacity(0.3);
+      team2Color = Colors.white.withOpacity(0.3);
+      _isTimerPaused = false;
+      _secondsRemaining = 25;
+    });
+
+    // Start timer for the new question
+    startTimer(reset: true);
+
+    // Enable buttons after delay
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          buttonsEnabled = true;
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -137,7 +181,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
       NextQuestion = false;
       team1Color = Colors.white.withOpacity(0.3);
       team2Color = Colors.white.withOpacity(0.3);
+      lastTeamAttempted = null; // Add this
     });
+
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
       setState(() {
@@ -207,15 +253,31 @@ class _QuestionsScreenState extends State<QuestionsScreen>
   }
 
   void resetQuestion() {
+    // Cancel existing timer first
+    _timer?.cancel();
+
     setState(() {
       selectedAnswer = null;
-      buttonsEnabled = false;
+      lastTeamAttempted = null; // This was missing in your setState
       NextQuestion = false;
+      buttonsEnabled = false; // Ensure buttons are disabled initially
       team1Color = Colors.white.withOpacity(0.3);
       team2Color = Colors.white.withOpacity(0.3);
-      _isTimerPaused = false; // Reset pause state
+      _isTimerPaused = false;
+      _secondsRemaining = 25; // Reset timer value
     });
+
+    // Start timer immediately
     startTimer(reset: true);
+
+    // Enable buttons after delay
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          buttonsEnabled = true;
+        });
+      }
+    });
   }
 
   String? lastTeamAttempted; // track who tried first
@@ -419,35 +481,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
             height: height,
             fit: BoxFit.cover,
           ),
-          Positioned(
-            top: -50,
-            child: Container(
-              width: 450,
-              height: 450,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    Colors.blueAccent.withOpacity(0.33),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -40,
-            child: Container(
-              width: 450,
-              height: 450,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [Colors.cyan.withOpacity(0.28), Colors.transparent],
-                ),
-              ),
-            ),
-          ),
+
           Center(
             child: SizedBox(
               width: width > 700 ? double.infinity : width * 0.85,
@@ -497,80 +531,93 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                     // ANSWERS
                     Expanded(
                       flex: 3,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children:
-                            shownAnswers[index].map((answer) {
-                              return SizedBox(
-                                width:
-                                    width > 700 ? width * 0.48 : width * 0.85,
-                                height: height * 0.07,
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    elevation: MaterialStateProperty.all(0),
-                                    backgroundColor:
-                                        MaterialStateProperty.resolveWith((
-                                          states,
-                                        ) {
-                                          if (answer == selectedAnswer) {
-                                            bool isCorrect =
-                                                answer == answers[index][0];
-                                            return isCorrect
-                                                ? Colors.green.withOpacity(0.8)
-                                                : Colors.red.withOpacity(0.8);
-                                          }
-                                          if (states.contains(
-                                            MaterialState.disabled,
-                                          )) {
-                                            return DarkMode
-                                                ? Colors.black.withOpacity(0.2)
-                                                : Colors.blueGrey.withOpacity(
-                                                  0.3,
-                                                );
-                                          }
-                                          return ContainerColor;
-                                        }),
-                                    foregroundColor:
-                                        MaterialStateProperty.resolveWith((
-                                          states,
-                                        ) {
-                                          if (states.contains(
-                                            MaterialState.disabled,
-                                          )) {
-                                            return Colors.white.withOpacity(
-                                              0.5,
-                                            );
-                                          }
-                                          return Colors.white;
-                                        }),
-                                    shape: MaterialStateProperty.all(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        side: BorderSide(
-                                          color: Colors.white.withOpacity(0.3),
-                                          width: 1,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed:
-                                      buttonsEnabled
-                                          ? () => answerQuestion(answer)
-                                          : null,
-                                  child: AnimatedSwitcher(
-                                    duration: Duration(seconds: 1),
-                                    child: Text(
-                                      answer,
-                                      key: ValueKey(answer),
-                                      style: GoogleFonts.aBeeZee(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: width > 700 ? 25 : 18,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: width > 700 ? 300 : 50,
+                        ),
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing:
+                                    40, // Add spacing between grid items
+                                mainAxisSpacing: 40, // Add spacing between rows
+                                childAspectRatio:
+                                    5, // Adjust this to control button height relative to width
+                              ),
+                          itemCount:
+                              shownAnswers[index]
+                                  .length, // Use the actual number of answers
+                          itemBuilder: (BuildContext context, int answerIndex) {
+                            final answer = shownAnswers[index][answerIndex];
+                            return SizedBox(
+                              width: width > 700 ? width * 0.48 : width * 0.85,
+                              // Remove fixed height or adjust as needed
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(0),
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith((
+                                        states,
+                                      ) {
+                                        if (answer == selectedAnswer) {
+                                          bool isCorrect =
+                                              answer == answers[index][0];
+                                          return isCorrect
+                                              ? Colors.green.withOpacity(0.8)
+                                              : Colors.red.withOpacity(0.8);
+                                        }
+                                        if (states.contains(
+                                          MaterialState.disabled,
+                                        )) {
+                                          return DarkMode
+                                              ? Colors.black.withOpacity(0.2)
+                                              : Colors.blueGrey.withOpacity(
+                                                0.3,
+                                              );
+                                        }
+                                        return ContainerColor;
+                                      }),
+                                  foregroundColor:
+                                      MaterialStateProperty.resolveWith((
+                                        states,
+                                      ) {
+                                        if (states.contains(
+                                          MaterialState.disabled,
+                                        )) {
+                                          return Colors.white.withOpacity(0.5);
+                                        }
+                                        return Colors.white;
+                                      }),
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      side: BorderSide(
+                                        color: Colors.white.withOpacity(0.3),
+                                        width: 1,
                                       ),
                                     ),
                                   ),
                                 ),
-                              );
-                            }).toList(),
+                                onPressed:
+                                    buttonsEnabled
+                                        ? () => answerQuestion(answer)
+                                        : null,
+                                child: AnimatedSwitcher(
+                                  duration: Duration(seconds: 1),
+                                  child: Text(
+                                    answer,
+                                    key: ValueKey(answer),
+                                    style: GoogleFonts.aBeeZee(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: width > 700 ? 25 : 18,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                     width > 700 ? Container() : SizedBox(height: 100),
@@ -580,13 +627,15 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                           flex: 2,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
-                              horizontal: width * 0.06,
+                              horizontal: width * 0.08,
+                              vertical: width * 0.005,
                             ),
                             child: Row(
                               children: [
+                                SizedBox(width: 150),
                                 buildScoreCard(team1, team1Score, width, 1),
 
-                                const Spacer(),
+                                SizedBox(width: 200),
                                 // option1
                                 Container(
                                   decoration: BoxDecoration(
@@ -598,14 +647,16 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                                     ),
                                   ),
                                   child: SizedBox(
-                                    width: width > 600 ? 0.11 * width : 100,
-                                    height: width > 600 ? 0.11 * width : 100,
-                                    child: Text(
-                                      "$_secondsRemaining",
-                                      style: GoogleFonts.aBeeZee(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: width > 700 ? 90 : 40,
+                                    width: width > 600 ? 0.09 * width : 100,
+                                    height: width > 600 ? 0.09 * width : 100,
+                                    child: Center(
+                                      child: Text(
+                                        "$_secondsRemaining",
+                                        style: GoogleFonts.aBeeZee(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: width > 700 ? 90 : 40,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -714,8 +765,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                                 //     startTimer(reset: true);
                                 //   },
                                 // ),
-                                const Spacer(),
+                                SizedBox(width: 200),
                                 buildScoreCard(team2, team2Score, width, 2),
+                                SizedBox(width: 150),
                               ],
                             ),
                           ),
@@ -752,7 +804,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                             buildScoreCard(team2, team2Score, width, 2),
                           ],
                         ),
-                    SizedBox(height: height * 0.05),
+                    SizedBox(height: height * 0.11),
                   ],
                 ),
               ),
@@ -779,102 +831,155 @@ class _QuestionsScreenState extends State<QuestionsScreen>
               ),
             ],
           ),
+
           //option1
-          Positioned(
-            bottom: 0,
-
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.refresh, color: Colors.white, size: 100),
-                  onPressed: () {
-                    setState(() {
-                      _isTimerPaused = false;
-                      _timer?.cancel();
-                      _secondsRemaining = 25;
-                      startTimer();
-                    });
-                  },
-                ),
-                SizedBox(width: 50),
-                IconButton(
-                  icon: Icon(
-                    _isTimerPaused ? Icons.play_arrow : Icons.pause,
-                    color: Colors.white,
-                    size: 100,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              height: height,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Add this after the refresh button or before the skip button
+                  Container(
+                    decoration: BoxDecoration(
+                      color: ContainerColor,
+                      borderRadius: BorderRadius.circular(60),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.skip_previous,
+                        size: 80,
+                        color: Colors.white,
+                      ), // or Icons.arrow_back
+                      onPressed: goToPreviousQuestion, // Create this method
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _isTimerPaused = !_isTimerPaused;
-                      if (_isTimerPaused) {
-                        _timer?.cancel();
-                      } else {
-                        startTimer();
-                      }
-                    });
-                  },
-                ),
-                // Container(
-                //   decoration: BoxDecoration(
-                //     color: ContainerColor,
-                //     borderRadius: BorderRadius.circular(50),
-                //     border: Border.all(
-                //       color: Colors.white.withOpacity(0.3),
-                //       width: 1,
-                //     ),
-                //   ),
-                //   child: MouseRegion(
-                //     onEnter: (_) {
-                //       setState(() {
-                //         _isHoveringOnTimer = true;
-                //       });
-                //     },
-                //     onExit: (_) {
-                //       setState(() {
-                //         _isHoveringOnTimer = false;
-                //       });
-                //     },
-                //     child: Stack(
-                //       alignment: Alignment.center,
-                //       children: [
-                //         if (_isHoveringOnTimer &&
-                //             !NextQuestion)
+                  SizedBox(width: 50),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: ContainerColor,
+                      borderRadius: BorderRadius.circular(60),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.refresh, color: Colors.white, size: 80),
+                      onPressed: () {
+                        resetQuestion();
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 50),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: ContainerColor,
+                      borderRadius: BorderRadius.circular(60),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        _isTimerPaused ? Icons.play_arrow : Icons.pause,
+                        color: Colors.white,
+                        size: 80,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isTimerPaused = !_isTimerPaused;
+                          if (_isTimerPaused) {
+                            _timer?.cancel();
+                          } else {
+                            startTimer();
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //     color: ContainerColor,
+                  //     borderRadius: BorderRadius.circular(50),
+                  //     border: Border.all(
+                  //       color: Colors.white.withOpacity(0.3),
+                  //       width: 1,
+                  //     ),
+                  //   ),
+                  //   child: MouseRegion(
+                  //     onEnter: (_) {
+                  //       setState(() {
+                  //         _isHoveringOnTimer = true;
+                  //       });
+                  //     },
+                  //     onExit: (_) {
+                  //       setState(() {
+                  //         _isHoveringOnTimer = false;
+                  //       });
+                  //     },
+                  //     child: Stack(
+                  //       alignment: Alignment.center,
+                  //       children: [
+                  //         if (_isHoveringOnTimer &&
+                  //             !NextQuestion)
 
-                //         else
-                //           Text(
-                //             "$_secondsRemaining",
-                //             style: GoogleFonts.aBeeZee(
-                //               color: Colors.white,
-                //               fontWeight: FontWeight.bold,
-                //               fontSize: width > 700 ? 90 : 40,
-                //             ),
-                //           ),
-                //         // Hover Controls
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                SizedBox(width: 50),
-                IconButton(
-                  icon: Icon(Icons.skip_next, size: 100, color: Colors.white),
-                  onPressed: () {
-                    index++;
+                  //         else
+                  //           Text(
+                  //             "$_secondsRemaining",
+                  //             style: GoogleFonts.aBeeZee(
+                  //               color: Colors.white,
+                  //               fontWeight: FontWeight.bold,
+                  //               fontSize: width > 700 ? 90 : 40,
+                  //             ),
+                  //           ),
+                  //         // Hover Controls
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  SizedBox(width: 50),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: ContainerColor,
+                      borderRadius: BorderRadius.circular(60),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.skip_next,
+                        size: 80,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        index++;
 
-                    if (index >= question.length) {
-                      navigateToResults();
-                      return;
-                    }
+                        if (index >= question.length) {
+                          navigateToResults();
+                          return;
+                        }
 
-                    // IMPORTANT FIX
-                    lastTeamAttempted = null;
+                        // IMPORTANT FIX
+                        lastTeamAttempted = null;
 
-                    NextQuestion = false;
-                    loadNextQuestion();
-                    startTimer(reset: true);
-                  },
-                ),
-              ],
+                        NextQuestion = false;
+                        loadNextQuestion();
+                        startTimer(reset: true);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
