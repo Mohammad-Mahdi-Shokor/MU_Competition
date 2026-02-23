@@ -1,5 +1,6 @@
 import 'package:codit_competition/Trivia/OneVOne.dart';
 import 'package:codit_competition/questions.dart';
+import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'CompetitionStartScreen.dart';
@@ -212,26 +213,19 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                   : OneVOne(
                     questions: widget.questions,
                     answers: widget.answers,
-                    competition:
-                        widget.custom
-                            ? Club.Custom
-                            : round == 0
-                            ? Club.Code_it
-                            : round == 1
-                            ? Club.MUBC
-                            : Club.Mix,
+                    competition: Club.MUBC,
                     team1:
                         round == 0
-                            ? teams[0].TeamName
+                            ? teams[0]
                             : round == 1
-                            ? teams[2].TeamName
-                            : finalists[0].TeamName,
+                            ? teams[2]
+                            : finalists[0],
                     team2:
                         round == 0
-                            ? teams[1].TeamName
+                            ? teams[1]
                             : round == 1
-                            ? teams[3].TeamName
-                            : finalists[1].TeamName,
+                            ? teams[3]
+                            : finalists[1],
                     teams: teams,
                     demo: widget.demo,
                   ),
@@ -316,40 +310,51 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(width > 700 ? 150 : 60),
-            border: Border.all(
-              color:
-                  last
-                      ? const Color.fromARGB(0, 255, 255, 255).withAlpha(0)
-                      : Colors.white,
-              width: 5,
+        if (!last)
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(width > 700 ? 150 : 60),
+              border: Border.all(color: Colors.white, width: 5),
+            ),
+            width: 100,
+            height: 100,
+            child: IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return target;
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.play_arrow, size: 70, color: Colors.white),
+            ),
+          )
+        else
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(width > 700 ? 150 : 60),
+              border: Border.all(color: Colors.white, width: 5),
+            ),
+            width: 100,
+            height: 100,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DefaultCompetitionStartScreen(),
+                    // Competitionstartscreen(
+                    //   teamsName: teams.map((team) => team.TeamName).toList(),
+                    // ),
+                  ),
+                );
+              },
+              icon: Icon(Icons.home, size: 70, color: Colors.white),
             ),
           ),
-          width: 100,
-          height: 100,
-          child: IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return target;
-                  },
-                ),
-              );
-            },
-            icon: Icon(
-              Icons.play_arrow,
-              size: 70,
-              color:
-                  last
-                      ? const Color.fromARGB(0, 255, 255, 255).withAlpha(0)
-                      : Colors.white,
-            ),
-          ),
-        ),
       ],
     );
   }

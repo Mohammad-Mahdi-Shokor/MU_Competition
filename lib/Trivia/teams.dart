@@ -3,7 +3,7 @@ class Team {
   String TeamName;
   Club club;
   int Level;
-
+  List<bool> helpingTools = [false, false, false];
   Team(this.Members, this.TeamName, this.club, this.Level);
 
   Team copy() {
@@ -19,6 +19,14 @@ class Team {
     String a = "";
     a += "Team Name : $TeamName, Teamlevel : $Level ";
     return a;
+  }
+
+  void useHelpingTool(int index) {
+    if (index > helpingTools.length - 1 || index < 0) {
+      print("Error");
+      return;
+    }
+    helpingTools[index] = true;
   }
 }
 

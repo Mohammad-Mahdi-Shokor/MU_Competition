@@ -2,12 +2,9 @@ import 'dart:async';
 import 'package:codit_competition/Trivia/LeaderBoardScreen.dart';
 import 'package:codit_competition/Trivia/oneVOneResults.dart';
 import 'package:codit_competition/Trivia/teams.dart';
-import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-
-import '../questions.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({
@@ -22,8 +19,8 @@ class QuestionsScreen extends StatefulWidget {
     required this.answers,
   });
   final Club competitionType;
-  final String team1;
-  final String team2;
+  final Team team1;
+  final Team team2;
   final List<Team> teams;
   final bool Draw;
   final bool Demo;
@@ -37,19 +34,17 @@ class _QuestionsScreenState extends State<QuestionsScreen>
     with SingleTickerProviderStateMixin {
   int index = 0;
 
-  late List<String> question;
-  late List<List<String>> answers;
-  late List<String> shownQuestions;
+  late List<String> shownQuestionTexts;
   late List<List<String>> shownAnswers;
   bool DarkMode = true;
-  late String team1 = widget.team1;
-  late String team2 = widget.team2;
+  late String team1 = widget.team1.TeamName;
+  late String team2 = widget.team2.TeamName;
+  List<Team> teams = [];
   int team1Score = 0;
   int team2Score = 0;
   int _secondsRemaining = 30;
   Timer? _timer;
   int currentTeam = 1;
-  bool _isHoveringOnTimer = false;
   bool _isTimerPaused = false;
 
   // TEAM COLORS
@@ -99,7 +94,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
     });
 
     // Start timer for the new question
-    startTimer(reset: true);
+    startTimer(reset: true); // Reset to 25 seconds
 
     // Enable buttons after delay
     Future.delayed(const Duration(seconds: 3), () {
@@ -115,40 +110,15 @@ class _QuestionsScreenState extends State<QuestionsScreen>
   void initState() {
     super.initState();
 
-    // Set questions and answers based on competition type
-    question =
-        widget.competitionType == Club.Custom
-            ? widget.questions
-            : widget.Demo
-            ? DemoQuestions
-            : widget.Draw
-            ? backupQuestions
-            : widget.competitionType == Club.Code_it
-            ? csQuestions
-            : widget.competitionType == Club.MUBC
-            ? businessQuestions
-            : generalQuestions;
-
-    answers =
-        widget.competitionType == Club.Custom
-            ? widget.answers
-            : widget.Demo
-            ? DemoAnswers
-            : widget.Draw
-            ? backupAnswers
-            : widget.competitionType == Club.Code_it
-            ? csAnswers
-            : widget.competitionType == Club.MUBC
-            ? businessAnswers
-            : generalAnswers;
-
-    // Shuffle questions
-    shownQuestions = List.from(question);
-    shownQuestions.shuffle();
-
-    // Shuffle answers for display, keep original first element as correct
+    // Use default questions from widget or demo questions
+    List<String> questionList =
+        widget.questions.isNotEmpty ? widget.questions : [];
+    List<List<String>> answersList =
+        widget.answers.isNotEmpty ? widget.answers : [];
+    teams = widget.teams;
+    shownQuestionTexts = questionList;
     shownAnswers =
-        answers.map((answerList) {
+        answersList.map((answerList) {
           List<String> shuffled = List.from(answerList);
           shuffled.shuffle();
           return shuffled;
@@ -224,18 +194,18 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
         showNextQuestionButton();
 
-        if (index >= question.length) {
+        if (index >= shownQuestionTexts.length) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder:
                   (context) => Onevoneresults(
-                    team1: team1,
+                    team1: widget.team1,
                     competition: widget.competitionType,
-                    team2: team2,
+                    team2: widget.team2,
                     team1Score: team1Score,
                     team2Score: team2Score,
-                    teams: widget.teams,
+                    teams: teams,
                     questions: widget.questions,
                     answers: widget.answers,
                   ),
@@ -346,15 +316,11 @@ class _QuestionsScreenState extends State<QuestionsScreen>
               spacing: 10,
               children: [
                 if (lastTeamAttempted == null) ...[
-                  teamButton(widget.team1),
-                  teamButton(widget.team2),
+                  teamButton(team1),
+                  teamButton(team2),
                 ] else ...[
                   // Second attempt: only show the team that didn't answer yet
-                  teamButton(
-                    lastTeamAttempted == widget.team1
-                        ? widget.team2
-                        : widget.team1,
-                  ),
+                  teamButton(lastTeamAttempted == team1 ? team2 : team1),
                 ],
                 // Cancel button
                 ElevatedButton(
@@ -380,8 +346,8 @@ class _QuestionsScreenState extends State<QuestionsScreen>
       return;
     }
 
-    bool isTeam1 = teamSelected == widget.team1;
-    bool isCorrect = answer == answers[index][0];
+    bool isTeam1 = teamSelected == widget.team1.TeamName;
+    bool isCorrect = answer == widget.answers[index][0];
     setState(() {
       selectedAnswer = answer; // Keep this set to show color
       buttonsEnabled = false;
@@ -427,12 +393,12 @@ class _QuestionsScreenState extends State<QuestionsScreen>
       MaterialPageRoute(
         builder:
             (context) => Onevoneresults(
-              team1: team1,
+              team1: widget.team1,
               competition: widget.competitionType,
-              team2: team2,
+              team2: widget.team2,
               team1Score: team1Score,
               team2Score: team2Score,
-              teams: widget.teams,
+              teams: teams,
               questions: widget.questions,
               answers: widget.answers,
             ),
@@ -481,335 +447,336 @@ class _QuestionsScreenState extends State<QuestionsScreen>
             height: height,
             fit: BoxFit.cover,
           ),
-
+          // the question , answers and scorecards
           Center(
             child: SizedBox(
               width: width > 700 ? double.infinity : width * 0.85,
-              child: SizedBox(
-                child: Column(
-                  children: [
-                    // QUESTION
-                    Expanded(
-                      flex: 2,
-                      child: Center(
-                        child: AnimatedSwitcher(
-                          duration: Duration(seconds: 1),
-                          child: Container(
-                            key: ValueKey(question[index]),
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: ContainerColor,
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.3),
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              question[index],
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.aBeeZee(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: width > 700 ? 40 : 28,
-                              ),
+              child: Column(
+                children: [
+                  // QUESTION
+                  Expanded(
+                    child: Center(
+                      child: AnimatedSwitcher(
+                        duration: Duration(seconds: 1),
+                        child: Container(
+                          key: ValueKey(shownQuestionTexts[index]),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: ContainerColor,
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                              width: 1,
                             ),
                           ),
-                          // transitionBuilder: (
-                          //   Widget child,
-                          //   Animation<double> animation,
-                          // ) {
-                          //   return ScaleTransition(
-                          //     scale: animation,
-                          //     child: child,
-                          //   );
-                          // },
-                        ),
-                      ),
-                    ),
-
-                    // ANSWERS
-                    Expanded(
-                      flex: 3,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: width > 700 ? 300 : 50,
-                        ),
-                        child: GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing:
-                                    40, // Add spacing between grid items
-                                mainAxisSpacing: 40, // Add spacing between rows
-                                childAspectRatio:
-                                    5, // Adjust this to control button height relative to width
-                              ),
-                          itemCount:
-                              shownAnswers[index]
-                                  .length, // Use the actual number of answers
-                          itemBuilder: (BuildContext context, int answerIndex) {
-                            final answer = shownAnswers[index][answerIndex];
-                            return SizedBox(
-                              width: width > 700 ? width * 0.48 : width * 0.85,
-                              // Remove fixed height or adjust as needed
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(0),
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith((
-                                        states,
-                                      ) {
-                                        if (answer == selectedAnswer) {
-                                          bool isCorrect =
-                                              answer == answers[index][0];
-                                          return isCorrect
-                                              ? Colors.green.withOpacity(0.8)
-                                              : Colors.red.withOpacity(0.8);
-                                        }
-                                        if (states.contains(
-                                          MaterialState.disabled,
-                                        )) {
-                                          return DarkMode
-                                              ? Colors.black.withOpacity(0.2)
-                                              : Colors.blueGrey.withOpacity(
-                                                0.3,
-                                              );
-                                        }
-                                        return ContainerColor;
-                                      }),
-                                  foregroundColor:
-                                      MaterialStateProperty.resolveWith((
-                                        states,
-                                      ) {
-                                        if (states.contains(
-                                          MaterialState.disabled,
-                                        )) {
-                                          return Colors.white.withOpacity(0.5);
-                                        }
-                                        return Colors.white;
-                                      }),
-                                  shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      side: BorderSide(
-                                        color: Colors.white.withOpacity(0.3),
-                                        width: 1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                onPressed:
-                                    buttonsEnabled
-                                        ? () => answerQuestion(answer)
-                                        : null,
-                                child: AnimatedSwitcher(
-                                  duration: Duration(seconds: 1),
-                                  child: Text(
-                                    answer,
-                                    key: ValueKey(answer),
-                                    style: GoogleFonts.aBeeZee(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: width > 700 ? 25 : 18,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    width > 700 ? Container() : SizedBox(height: 100),
-                    // SCORE + TIMER
-                    width > 700
-                        ? Expanded(
-                          flex: 2,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: width * 0.08,
-                              vertical: width * 0.005,
+                          child: Text(
+                            shownQuestionTexts[index],
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.aBeeZee(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: width > 700 ? 40 : 28,
                             ),
-                            child: Row(
-                              children: [
-                                SizedBox(width: 150),
-                                buildScoreCard(team1, team1Score, width, 1),
+                          ),
+                        ),
+                        // transitionBuilder: (
+                        //   Widget child,
+                        //   Animation<double> animation,
+                        // ) {
+                        //   return ScaleTransition(
+                        //     scale: animation,
+                        //     child: child,
+                        //   );
+                        // },
+                      ),
+                    ),
+                  ),
 
-                                SizedBox(width: 200),
-                                // option1
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: ContainerColor,
-                                    borderRadius: BorderRadius.circular(50),
-                                    border: Border.all(
+                  // ANSWERS
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: width > 700 ? 300 : 50,
+                      ),
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing:
+                                  40, // Add spacing between grid items
+                              mainAxisSpacing: 40, // Add spacing between rows
+                              childAspectRatio:
+                                  7, // Adjust this to control button height relative to width
+                            ),
+                        itemCount:
+                            shownAnswers[index]
+                                .length, // Use the actual number of answers
+                        itemBuilder: (BuildContext context, int answerIndex) {
+                          final answer = shownAnswers[index][answerIndex];
+                          return SizedBox(
+                            width: width > 700 ? width * 0.48 : width * 0.85,
+                            // Remove fixed height or adjust as needed
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                elevation: MaterialStateProperty.all(0),
+                                backgroundColor:
+                                    MaterialStateProperty.resolveWith((states) {
+                                      if (answer == selectedAnswer) {
+                                        bool isCorrect =
+                                            answer == widget.answers[index][0];
+                                        return isCorrect
+                                            ? Colors.green.withOpacity(0.8)
+                                            : Colors.red.withOpacity(0.8);
+                                      }
+                                      if (states.contains(
+                                        MaterialState.disabled,
+                                      )) {
+                                        return DarkMode
+                                            ? Colors.black.withOpacity(0.2)
+                                            : Colors.blueGrey.withOpacity(0.3);
+                                      }
+                                      return ContainerColor;
+                                    }),
+                                foregroundColor:
+                                    MaterialStateProperty.resolveWith((states) {
+                                      if (states.contains(
+                                        MaterialState.disabled,
+                                      )) {
+                                        return Colors.white.withOpacity(0.5);
+                                      }
+                                      return Colors.white;
+                                    }),
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    side: BorderSide(
                                       color: Colors.white.withOpacity(0.3),
                                       width: 1,
                                     ),
                                   ),
-                                  child: SizedBox(
-                                    width: width > 600 ? 0.09 * width : 100,
-                                    height: width > 600 ? 0.09 * width : 100,
-                                    child: Center(
-                                      child: Text(
-                                        "$_secondsRemaining",
-                                        style: GoogleFonts.aBeeZee(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: width > 700 ? 90 : 40,
-                                        ),
+                                ),
+                              ),
+                              onPressed:
+                                  buttonsEnabled
+                                      ? () => answerQuestion(answer)
+                                      : null,
+                              child: AnimatedSwitcher(
+                                duration: Duration(seconds: 1),
+                                child: Text(
+                                  answer,
+                                  key: ValueKey(answer),
+                                  style: GoogleFonts.aBeeZee(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: width > 700 ? 25 : 18,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  width > 700 ? Container() : SizedBox(height: 100),
+                  // SCORE + TIMER
+                  width > 700
+                      ? Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: width * 0.08,
+                            vertical: width * 0.005,
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(width: 150),
+                              buildScoreCard(
+                                widget.team1,
+                                team1Score,
+                                width,
+                                1,
+                              ),
+
+                              SizedBox(width: 200),
+                              // option1
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: ContainerColor,
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.3),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: SizedBox(
+                                  width: width > 600 ? 0.09 * width : 100,
+                                  height: width > 600 ? 0.09 * width : 100,
+                                  child: Center(
+                                    child: Text(
+                                      "$_secondsRemaining",
+                                      style: GoogleFonts.aBeeZee(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: width > 700 ? 90 : 40,
                                       ),
                                     ),
                                   ),
                                 ),
-
-                                //option2
-                                // IconButton(
-                                //   icon: Icon(
-                                //     Icons.refresh,
-                                //     color: Colors.white,
-                                //     size: 100,
-                                //   ),
-                                //   onPressed: () {
-                                //     setState(() {
-                                //       _isTimerPaused = false;
-                                //       _timer?.cancel();
-                                //       _secondsRemaining = 25;
-                                //       startTimer();
-                                //     });
-                                //   },
-                                // ),
-                                // SizedBox(width: 50),
-                                // Container(
-                                //   decoration: BoxDecoration(
-                                //     color: ContainerColor,
-                                //     borderRadius: BorderRadius.circular(50),
-                                //     border: Border.all(
-                                //       color: Colors.white.withOpacity(0.3),
-                                //       width: 1,
-                                //     ),
-                                //   ),
-                                //   child: SizedBox(
-                                //     width: width > 600 ? 0.11 * width : 100,
-                                //     height: width > 600 ? 0.11 * width : 100,
-                                //     child: MouseRegion(
-                                //       onEnter: (_) {
-                                //         setState(() {
-                                //           _isHoveringOnTimer = true;
-                                //         });
-                                //       },
-                                //       onExit: (_) {
-                                //         setState(() {
-                                //           _isHoveringOnTimer = false;
-                                //         });
-                                //       },
-                                //       child: Stack(
-                                //         alignment: Alignment.center,
-                                //         children: [
-                                //           if (_isHoveringOnTimer &&
-                                //               !NextQuestion)
-                                //             IconButton(
-                                //               icon: Icon(
-                                //                 _isTimerPaused
-                                //                     ? Icons.play_arrow
-                                //                     : Icons.pause,
-                                //                 color: Colors.white,
-                                //                 size: 100,
-                                //               ),
-                                //               onPressed: () {
-                                //                 setState(() {
-                                //                   _isTimerPaused =
-                                //                       !_isTimerPaused;
-                                //                   if (_isTimerPaused) {
-                                //                     _timer?.cancel();
-                                //                   } else {
-                                //                     startTimer();
-                                //                   }
-                                //                 });
-                                //               },
-                                //             )
-                                //           else
-                                //             Text(
-                                //               "$_secondsRemaining",
-                                //               style: GoogleFonts.aBeeZee(
-                                //                 color: Colors.white,
-                                //                 fontWeight: FontWeight.bold,
-                                //                 fontSize: width > 700 ? 90 : 40,
-                                //               ),
-                                //             ),
-                                //           // Hover Controls
-                                //         ],
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
-                                // SizedBox(width: 50),
-                                // IconButton(
-                                //   icon: Icon(
-                                //     Icons.skip_next,
-                                //     size: 100,
-                                //     color: Colors.white,
-                                //   ),
-                                //   onPressed: () {
-                                //     index++;
-
-                                //     if (index >= question.length) {
-                                //       navigateToResults();
-                                //       return;
-                                //     }
-
-                                //     // IMPORTANT FIX
-                                //     lastTeamAttempted = null;
-
-                                //     NextQuestion = false;
-                                //     loadNextQuestion();
-                                //     startTimer(reset: true);
-                                //   },
-                                // ),
-                                SizedBox(width: 200),
-                                buildScoreCard(team2, team2Score, width, 2),
-                                SizedBox(width: 150),
-                              ],
-                            ),
-                          ),
-                        )
-                        : Row(
-                          children: [
-                            buildScoreCard(team1, team1Score, width, 1),
-
-                            const Spacer(),
-
-                            Container(
-                              decoration: BoxDecoration(
-                                color: ContainerColor,
-                                borderRadius: BorderRadius.circular(50),
                               ),
-                              child: SizedBox(
-                                width: width > 600 ? 0.11 * width : 100,
-                                height: width > 600 ? 0.11 * width : 100,
-                                child: Center(
-                                  child: Text(
-                                    "$_secondsRemaining",
-                                    style: GoogleFonts.aBeeZee(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: width > 700 ? 90 : 40,
-                                    ),
+
+                              //option2
+                              // IconButton(
+                              //   icon: Icon(
+                              //     Icons.refresh,
+                              //     color: Colors.white,
+                              //     size: 100,
+                              //   ),
+                              //   onPressed: () {
+                              //     setState(() {
+                              //       _isTimerPaused = false;
+                              //       _timer?.cancel();
+                              //       _secondsRemaining = 25;
+                              //       startTimer();
+                              //     });
+                              //   },
+                              // ),
+                              // SizedBox(width: 50),
+                              // Container(
+                              //   decoration: BoxDecoration(
+                              //     color: ContainerColor,
+                              //     borderRadius: BorderRadius.circular(50),
+                              //     border: Border.all(
+                              //       color: Colors.white.withOpacity(0.3),
+                              //       width: 1,
+                              //     ),
+                              //   ),
+                              //   child: SizedBox(
+                              //     width: width > 600 ? 0.11 * width : 100,
+                              //     height: width > 600 ? 0.11 * width : 100,
+                              //     child: MouseRegion(
+                              //       onEnter: (_) {
+                              //         setState(() {
+                              //           _isHoveringOnTimer = true;
+                              //         });
+                              //       },
+                              //       onExit: (_) {
+                              //         setState(() {
+                              //           _isHoveringOnTimer = false;
+                              //         });
+                              //       },
+                              //       child: Stack(
+                              //         alignment: Alignment.center,
+                              //         children: [
+                              //           if (_isHoveringOnTimer &&
+                              //               !NextQuestion)
+                              //             IconButton(
+                              //               icon: Icon(
+                              //                 _isTimerPaused
+                              //                     ? Icons.play_arrow
+                              //                     : Icons.pause,
+                              //                 color: Colors.white,
+                              //                 size: 100,
+                              //               ),
+                              //               onPressed: () {
+                              //                 setState(() {
+                              //                   _isTimerPaused =
+                              //                       !_isTimerPaused;
+                              //                   if (_isTimerPaused) {
+                              //                     _timer?.cancel();
+                              //                   } else {
+                              //                     startTimer();
+                              //                   }
+                              //                 });
+                              //               },
+                              //             )
+                              //           else
+                              //             Text(
+                              //               "$_secondsRemaining",
+                              //               style: GoogleFonts.aBeeZee(
+                              //                 color: Colors.white,
+                              //                 fontWeight: FontWeight.bold,
+                              //                 fontSize: width > 700 ? 90 : 40,
+                              //               ),
+                              //             ),
+                              //           // Hover Controls
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              // SizedBox(width: 50),
+                              // IconButton(
+                              //   icon: Icon(
+                              //     Icons.skip_next,
+                              //     size: 100,
+                              //     color: Colors.white,
+                              //   ),
+                              //   onPressed: () {
+                              //     index++;
+
+                              //     if (index >= question.length) {
+                              //       navigateToResults();
+                              //       return;
+                              //     }
+
+                              //     // IMPORTANT FIX
+                              //     lastTeamAttempted = null;
+
+                              //     NextQuestion = false;
+                              //     loadNextQuestion();
+                              //     startTimer(reset: true);
+                              //   },
+                              // ),
+                              SizedBox(width: 200),
+                              buildScoreCard(
+                                widget.team2,
+                                team2Score,
+                                width,
+                                2,
+                              ),
+                              SizedBox(width: 150),
+                            ],
+                          ),
+                        ),
+                      )
+                      : Row(
+                        children: [
+                          buildScoreCard(widget.team1, team1Score, width, 1),
+
+                          const Spacer(),
+
+                          Container(
+                            decoration: BoxDecoration(
+                              color: ContainerColor,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: SizedBox(
+                              width: width > 600 ? 0.11 * width : 100,
+                              height: width > 600 ? 0.11 * width : 100,
+                              child: Center(
+                                child: Text(
+                                  "$_secondsRemaining",
+                                  style: GoogleFonts.aBeeZee(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width > 700 ? 90 : 40,
                                   ),
                                 ),
                               ),
                             ),
+                          ),
 
-                            const Spacer(),
+                          const Spacer(),
 
-                            buildScoreCard(team2, team2Score, width, 2),
-                          ],
-                        ),
-                    SizedBox(height: height * 0.11),
-                  ],
-                ),
+                          buildScoreCard(widget.team2, team2Score, width, 2),
+                        ],
+                      ),
+                  SizedBox(height: height * 0.08),
+                ],
               ),
             ),
           ),
+
+          // the go back bottom on the corner
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -821,8 +788,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder:
-                            (context) => Leaderboardscreen(teams: widget.teams),
+                        builder: (context) => Leaderboardscreen(teams: teams),
                       ),
                     );
                   },
@@ -833,6 +799,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
           ),
 
           //option1
+          // the tools on the bottom
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -860,23 +827,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                       onPressed: goToPreviousQuestion, // Create this method
                     ),
                   ),
-                  SizedBox(width: 50),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: ContainerColor,
-                      borderRadius: BorderRadius.circular(60),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
-                        width: 1,
-                      ),
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.refresh, color: Colors.white, size: 80),
-                      onPressed: () {
-                        resetQuestion();
-                      },
-                    ),
-                  ),
+
                   SizedBox(width: 50),
                   Container(
                     decoration: BoxDecoration(
@@ -964,7 +915,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                       onPressed: () {
                         index++;
 
-                        if (index >= question.length) {
+                        if (index >= shownQuestionTexts.length) {
                           navigateToResults();
                           return;
                         }
@@ -990,7 +941,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
   // ----------------------------------------------------------
   // HELPERS
   // ----------------------------------------------------------
-  Widget buildScoreCard(String team, int score, double width, int number) {
+  Widget buildScoreCard(Team team, int score, double width, int number) {
     return width > 700
         ? Expanded(
           child: Container(
@@ -1009,7 +960,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 18),
                   child: FittedBox(
                     child: Text(
-                      team,
+                      team.TeamName,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.aBeeZee(
                         color: Colors.white,
@@ -1028,6 +979,67 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                     fontSize: 75,
                   ),
                 ),
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      disabledColor: Colors.white54,
+                      icon: Icon(
+                        Icons.people,
+                        color:
+                            !team.helpingTools[1]
+                                ? Colors.white
+                                : Colors.white54,
+                        size: 60,
+                      ),
+                      onPressed: () {
+                        // resetQuestion();
+                      },
+                    ),
+
+                    IconButton(
+                      disabledColor: Colors.white54,
+
+                      icon: Icon(
+                        Icons.refresh,
+                        color:
+                            !team.helpingTools[1]
+                                ? Colors.white
+                                : Colors.white54,
+                        size: 60,
+                      ),
+                      onPressed:
+                          team.helpingTools[1]
+                              ? () {
+                                if (!team.helpingTools[1]) {
+                                  setState(() {
+                                    resetQuestion();
+                                    team.useHelpingTool(index);
+                                    teams[teams.indexOf(team)].useHelpingTool(
+                                      index,
+                                    );
+                                  });
+                                }
+                              }
+                              : null,
+                    ),
+                    IconButton(
+                      disabledColor: Colors.white54,
+                      icon: Icon(
+                        Icons.person,
+                        color:
+                            !team.helpingTools[1]
+                                ? Colors.white
+                                : Colors.white54,
+                        size: 60,
+                      ),
+                      onPressed: () {
+                        // resetQuestion();
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -1044,7 +1056,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: Text(
-                  team,
+                  team.TeamName,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.aBeeZee(
                     color: Colors.white,

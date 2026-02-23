@@ -2,9 +2,12 @@ import 'dart:async';
 import 'package:codit_competition/Trivia/Questions_Screen.dart';
 import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/questions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+
+import 'MUBCtriviaquestions.dart';
 
 class OneVOne extends StatefulWidget {
   const OneVOne({
@@ -16,6 +19,7 @@ class OneVOne extends StatefulWidget {
     this.demo = false,
     this.questions = generalQuestions,
     this.answers = generalAnswers,
+    required this.category,
   });
   final Club competition;
   final Team team1;
@@ -24,6 +28,7 @@ class OneVOne extends StatefulWidget {
   final List<Team> teams;
   final List<String> questions;
   final List<List<String>> answers;
+  final CategoryType category;
   @override
   State<OneVOne> createState() => _OneVOneState();
 }
@@ -143,65 +148,19 @@ class _OneVOneState extends State<OneVOne> {
                 SizedBox(height: 100),
                 SizedBox(
                   width: width * 0.85,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: TeamsContainer(width, widget.team1.TeamName),
-                      ),
-                      SizedBox(width: 150),
-                      Text(
-                        "VS",
-                        style: GoogleFonts.aBeeZee(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 140,
-                        ),
-                      ),
-                      SizedBox(width: 150),
-                      Expanded(
-                        child: TeamsContainer(width, widget.team2.TeamName),
-                      ),
-                    ],
+                  child: Text(
+                    CategoryTypeName(widget.category).displayName,
+                    style: GoogleFonts.aBeeZee(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 140,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Container TeamsContainer(double width, String teamName) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color:
-            DarkMode
-                ? Colors.black.withOpacity(0.3)
-                : Colors.white.withOpacity(0.18),
-        borderRadius: BorderRadius.circular(50),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: DarkMode ? 3 : 0,
-        ),
-      ),
-      child: SizedBox(
-        width: width > 700 ? 200 : 125,
-        height: width > 700 ? 200 : 125,
-        child: Center(
-          child: FittedBox(
-            child: Text(
-              teamName,
-              style: GoogleFonts.aBeeZee(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 70,
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

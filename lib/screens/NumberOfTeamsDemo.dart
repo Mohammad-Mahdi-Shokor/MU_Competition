@@ -29,41 +29,41 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
   }
 
   Future<void> _saveTeams() async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: const [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                "Challenge Data saved successfully!",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: Color.fromARGB(255, 26, 133, 30),
-        behavior: SnackBarBehavior.floating,
-        elevation: 6,
-        action: SnackBarAction(
-          label: "OK",
-          textColor: Colors.white,
-          onPressed: () {},
-        ),
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: Row(
+    //       children: const [
+    //         Icon(Icons.check_circle, color: Colors.white),
+    //         SizedBox(width: 10),
+    //         Expanded(
+    //           child: Text(
+    //             "Challenge Data saved successfully!",
+    //             style: TextStyle(fontSize: 16, color: Colors.white),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //     backgroundColor: Color.fromARGB(255, 26, 133, 30),
+    //     behavior: SnackBarBehavior.floating,
+    //     elevation: 6,
+    //     action: SnackBarAction(
+    //       label: "OK",
+    //       textColor: Colors.white,
+    //       onPressed: () {},
+    //     ),
 
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    //     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    //     duration: const Duration(seconds: 2),
+    //   ),
+    // );
 
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (ctx) {
           return TeamInputScreen(
-            competition: Club.Code_it,
+            competition: widget.competition,
             size: size,
             Background: ChosenBackground,
           );

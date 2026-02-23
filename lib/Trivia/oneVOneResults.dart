@@ -22,8 +22,8 @@ class Onevoneresults extends StatefulWidget {
   });
 
   final Club competition;
-  final String team1;
-  final String team2;
+  final Team team1;
+  final Team team2;
   final int team1Score;
   final int team2Score;
   final List<Team> teams;
@@ -50,21 +50,26 @@ class _OnevoneresultsState extends State<Onevoneresults> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_counter == 0) {
         _timer?.cancel();
-
-        // Determine the winner
-        String winnerTeam =
-            widget.team1Score >= widget.team2Score
-                ? widget.team1
-                : widget.team2;
-        int newLevel = widget.competition == Club.Mix ? 2 : 1;
-
-        _updateTeamLevel(winnerTeam, newLevel);
+        // Don't auto-navigate - let user click a button instead
       } else {
         setState(() {
           _counter--;
         });
       }
     });
+  }
+
+  void _proceedAfterResults() {
+    // Determine the winner
+    String winnerTeam =
+        widget.team1Score >= widget.team2Score
+            ? widget.team1.TeamName
+            : widget.team2.TeamName;
+    // If teams are Level 1, winner becomes Level 2 (finals champion)
+    // Otherwise, winner becomes Level 1 (advanced to finals)
+    int newLevel = widget.team1.Level >= 1 ? 2 : 1;
+
+    _updateTeamLevel(winnerTeam, newLevel);
   }
 
   void _updateTeamLevel(String teamName, int newLevel) {
@@ -190,7 +195,7 @@ class _OnevoneresultsState extends State<Onevoneresults> {
                     children: [
                       SizedBox(
                         width: 400,
-                        child: TeamsContainer(width, widget.team1),
+                        child: TeamsContainer(width, widget.team1.TeamName),
                       ),
                       SizedBox(width: 30),
                       Container(
@@ -223,9 +228,28 @@ class _OnevoneresultsState extends State<Onevoneresults> {
                       SizedBox(width: 30),
                       SizedBox(
                         width: 400,
-                        child: TeamsContainer(width, widget.team2),
+                        child: TeamsContainer(width, widget.team2.TeamName),
                       ),
                     ],
+                  ),
+                ),
+                SizedBox(height: 80),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: _proceedAfterResults,
+                  child: Text(
+                    "Continue",
+                    style: GoogleFonts.aBeeZee(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
               ],
