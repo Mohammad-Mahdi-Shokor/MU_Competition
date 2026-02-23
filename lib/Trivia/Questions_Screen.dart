@@ -90,7 +90,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
       team1Color = Colors.white.withOpacity(0.3);
       team2Color = Colors.white.withOpacity(0.3);
       _isTimerPaused = false;
-      _secondsRemaining = 25;
+      _secondsRemaining = 30;
     });
 
     // Start timer for the new question
@@ -170,7 +170,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
     _timer?.cancel();
     if (reset) {
-      _secondsRemaining = 25;
+      _secondsRemaining = 30;
     }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -274,7 +274,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
         TextStyle buttonTextStyle = GoogleFonts.aBeeZee(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 18,
+          fontSize: 30,
         );
 
         // Helper to build styled buttons
@@ -302,13 +302,13 @@ class _QuestionsScreenState extends State<QuestionsScreen>
             style: GoogleFonts.aBeeZee(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 24,
+              fontSize: 35,
             ),
           ),
           content: Text(
             "Select the team that answered this question.",
             textAlign: TextAlign.center,
-            style: GoogleFonts.aBeeZee(color: Colors.white70, fontSize: 18),
+            style: GoogleFonts.aBeeZee(color: Colors.white70, fontSize: 24),
           ),
           actions: [
             Row(
@@ -503,10 +503,10 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               crossAxisSpacing:
-                                  40, // Add spacing between grid items
-                              mainAxisSpacing: 40, // Add spacing between rows
+                                  30, // Add spacing between grid items
+                              mainAxisSpacing: 20, // Add spacing between rows
                               childAspectRatio:
-                                  7, // Adjust this to control button height relative to width
+                                  6, // Adjust this to control button height relative to width
                             ),
                         itemCount:
                             shownAnswers[index]
@@ -580,162 +580,150 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                   width > 700 ? Container() : SizedBox(height: 100),
                   // SCORE + TIMER
                   width > 700
-                      ? Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: width * 0.08,
-                            vertical: width * 0.005,
-                          ),
-                          child: Row(
-                            children: [
-                              SizedBox(width: 150),
-                              buildScoreCard(
-                                widget.team1,
-                                team1Score,
-                                width,
-                                1,
-                              ),
+                      ? Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: width * 0.08,
+                          vertical: width * 0.005,
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(width: 150),
+                            buildScoreCard(widget.team1, team1Score, width, 1),
 
-                              SizedBox(width: 200),
-                              // option1
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: ContainerColor,
-                                  borderRadius: BorderRadius.circular(50),
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.3),
-                                    width: 1,
-                                  ),
+                            SizedBox(width: 150),
+                            // option1
+                            Container(
+                              decoration: BoxDecoration(
+                                color: ContainerColor,
+                                borderRadius: BorderRadius.circular(50),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.3),
+                                  width: 1,
                                 ),
-                                child: SizedBox(
-                                  width: width > 600 ? 0.09 * width : 100,
-                                  height: width > 600 ? 0.09 * width : 100,
-                                  child: Center(
-                                    child: Text(
-                                      "$_secondsRemaining",
-                                      style: GoogleFonts.aBeeZee(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: width > 700 ? 90 : 40,
-                                      ),
+                              ),
+                              child: SizedBox(
+                                width: width > 600 ? 0.09 * width : 100,
+                                height: width > 600 ? 0.09 * width : 100,
+                                child: Center(
+                                  child: Text(
+                                    "$_secondsRemaining",
+                                    style: GoogleFonts.aBeeZee(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: width > 700 ? 90 : 40,
                                     ),
                                   ),
                                 ),
                               ),
+                            ),
 
-                              //option2
-                              // IconButton(
-                              //   icon: Icon(
-                              //     Icons.refresh,
-                              //     color: Colors.white,
-                              //     size: 100,
-                              //   ),
-                              //   onPressed: () {
-                              //     setState(() {
-                              //       _isTimerPaused = false;
-                              //       _timer?.cancel();
-                              //       _secondsRemaining = 25;
-                              //       startTimer();
-                              //     });
-                              //   },
-                              // ),
-                              // SizedBox(width: 50),
-                              // Container(
-                              //   decoration: BoxDecoration(
-                              //     color: ContainerColor,
-                              //     borderRadius: BorderRadius.circular(50),
-                              //     border: Border.all(
-                              //       color: Colors.white.withOpacity(0.3),
-                              //       width: 1,
-                              //     ),
-                              //   ),
-                              //   child: SizedBox(
-                              //     width: width > 600 ? 0.11 * width : 100,
-                              //     height: width > 600 ? 0.11 * width : 100,
-                              //     child: MouseRegion(
-                              //       onEnter: (_) {
-                              //         setState(() {
-                              //           _isHoveringOnTimer = true;
-                              //         });
-                              //       },
-                              //       onExit: (_) {
-                              //         setState(() {
-                              //           _isHoveringOnTimer = false;
-                              //         });
-                              //       },
-                              //       child: Stack(
-                              //         alignment: Alignment.center,
-                              //         children: [
-                              //           if (_isHoveringOnTimer &&
-                              //               !NextQuestion)
-                              //             IconButton(
-                              //               icon: Icon(
-                              //                 _isTimerPaused
-                              //                     ? Icons.play_arrow
-                              //                     : Icons.pause,
-                              //                 color: Colors.white,
-                              //                 size: 100,
-                              //               ),
-                              //               onPressed: () {
-                              //                 setState(() {
-                              //                   _isTimerPaused =
-                              //                       !_isTimerPaused;
-                              //                   if (_isTimerPaused) {
-                              //                     _timer?.cancel();
-                              //                   } else {
-                              //                     startTimer();
-                              //                   }
-                              //                 });
-                              //               },
-                              //             )
-                              //           else
-                              //             Text(
-                              //               "$_secondsRemaining",
-                              //               style: GoogleFonts.aBeeZee(
-                              //                 color: Colors.white,
-                              //                 fontWeight: FontWeight.bold,
-                              //                 fontSize: width > 700 ? 90 : 40,
-                              //               ),
-                              //             ),
-                              //           // Hover Controls
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              // SizedBox(width: 50),
-                              // IconButton(
-                              //   icon: Icon(
-                              //     Icons.skip_next,
-                              //     size: 100,
-                              //     color: Colors.white,
-                              //   ),
-                              //   onPressed: () {
-                              //     index++;
+                            //option2
+                            // IconButton(
+                            //   icon: Icon(
+                            //     Icons.refresh,
+                            //     color: Colors.white,
+                            //     size: 100,
+                            //   ),
+                            //   onPressed: () {
+                            //     setState(() {
+                            //       _isTimerPaused = false;
+                            //       _timer?.cancel();
+                            //       _secondsRemaining = 25;
+                            //       startTimer();
+                            //     });
+                            //   },
+                            // ),
+                            // SizedBox(width: 50),
+                            // Container(
+                            //   decoration: BoxDecoration(
+                            //     color: ContainerColor,
+                            //     borderRadius: BorderRadius.circular(50),
+                            //     border: Border.all(
+                            //       color: Colors.white.withOpacity(0.3),
+                            //       width: 1,
+                            //     ),
+                            //   ),
+                            //   child: SizedBox(
+                            //     width: width > 600 ? 0.11 * width : 100,
+                            //     height: width > 600 ? 0.11 * width : 100,
+                            //     child: MouseRegion(
+                            //       onEnter: (_) {
+                            //         setState(() {
+                            //           _isHoveringOnTimer = true;
+                            //         });
+                            //       },
+                            //       onExit: (_) {
+                            //         setState(() {
+                            //           _isHoveringOnTimer = false;
+                            //         });
+                            //       },
+                            //       child: Stack(
+                            //         alignment: Alignment.center,
+                            //         children: [
+                            //           if (_isHoveringOnTimer &&
+                            //               !NextQuestion)
+                            //             IconButton(
+                            //               icon: Icon(
+                            //                 _isTimerPaused
+                            //                     ? Icons.play_arrow
+                            //                     : Icons.pause,
+                            //                 color: Colors.white,
+                            //                 size: 100,
+                            //               ),
+                            //               onPressed: () {
+                            //                 setState(() {
+                            //                   _isTimerPaused =
+                            //                       !_isTimerPaused;
+                            //                   if (_isTimerPaused) {
+                            //                     _timer?.cancel();
+                            //                   } else {
+                            //                     startTimer();
+                            //                   }
+                            //                 });
+                            //               },
+                            //             )
+                            //           else
+                            //             Text(
+                            //               "$_secondsRemaining",
+                            //               style: GoogleFonts.aBeeZee(
+                            //                 color: Colors.white,
+                            //                 fontWeight: FontWeight.bold,
+                            //                 fontSize: width > 700 ? 90 : 40,
+                            //               ),
+                            //             ),
+                            //           // Hover Controls
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            // SizedBox(width: 50),
+                            // IconButton(
+                            //   icon: Icon(
+                            //     Icons.skip_next,
+                            //     size: 100,
+                            //     color: Colors.white,
+                            //   ),
+                            //   onPressed: () {
+                            //     index++;
 
-                              //     if (index >= question.length) {
-                              //       navigateToResults();
-                              //       return;
-                              //     }
+                            //     if (index >= question.length) {
+                            //       navigateToResults();
+                            //       return;
+                            //     }
 
-                              //     // IMPORTANT FIX
-                              //     lastTeamAttempted = null;
+                            //     // IMPORTANT FIX
+                            //     lastTeamAttempted = null;
 
-                              //     NextQuestion = false;
-                              //     loadNextQuestion();
-                              //     startTimer(reset: true);
-                              //   },
-                              // ),
-                              SizedBox(width: 200),
-                              buildScoreCard(
-                                widget.team2,
-                                team2Score,
-                                width,
-                                2,
-                              ),
-                              SizedBox(width: 150),
-                            ],
-                          ),
+                            //     NextQuestion = false;
+                            //     loadNextQuestion();
+                            //     startTimer(reset: true);
+                            //   },
+                            // ),
+                            SizedBox(width: 150),
+                            buildScoreCard(widget.team2, team2Score, width, 2),
+                            SizedBox(width: 150),
+                          ],
                         ),
                       )
                       : Row(
@@ -770,7 +758,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                           buildScoreCard(widget.team2, team2Score, width, 2),
                         ],
                       ),
-                  SizedBox(height: height * 0.08),
+                  SizedBox(height: width > 700 ? height * 0.1 : height * 0.05),
                 ],
               ),
             ),
@@ -970,73 +958,162 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                   ),
                 ),
                 Divider(),
-                Text(
-                  "$score",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.aBeeZee(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 75,
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  transitionBuilder:
+                      (child, animation) =>
+                          ScaleTransition(scale: animation, child: child),
+                  child: Text(
+                    "$score",
+                    key: ValueKey(score),
+                    style: GoogleFonts.aBeeZee(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 75,
+                    ),
                   ),
                 ),
                 Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      disabledColor: Colors.white54,
-                      icon: Icon(
-                        Icons.people,
-                        color:
-                            !team.helpingTools[1]
-                                ? Colors.white
-                                : Colors.white54,
-                        size: 60,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: buildToolIcon(
+                        icon: Icons.people,
+                        used: team.helpingTools[0],
+                        onTap:
+                            !team.helpingTools[0]
+                                ? () {
+                                  setState(() {
+                                    team.useHelpingTool(0);
+                                  });
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        backgroundColor: const Color.fromARGB(
+                                          154,
+                                          0,
+                                          0,
+                                          0,
+                                        ),
+                                        content: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 100,
+                                                backgroundColor: Color(
+                                                  0xFF4FC3F7,
+                                                ),
+                                                child: Icon(
+                                                  Icons.people,
+                                                  size: 105,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              SizedBox(height: 35),
+                                              Text(
+                                                "Ask The Audience",
+                                                style: TextStyle(
+                                                  fontSize: 50,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              SizedBox(height: 20, width: 130),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }
+                                : null,
+                        color: Color(0xFF4FC3F7), // Light Blue
                       ),
-                      onPressed: () {
-                        // resetQuestion();
-                      },
                     ),
 
-                    IconButton(
-                      disabledColor: Colors.white54,
-
-                      icon: Icon(
-                        Icons.refresh,
-                        color:
-                            !team.helpingTools[1]
-                                ? Colors.white
-                                : Colors.white54,
-                        size: 60,
-                      ),
-                      onPressed:
-                          team.helpingTools[1]
+                    buildToolIcon(
+                      icon: Icons.refresh,
+                      used: team.helpingTools[1],
+                      onTap:
+                          !team.helpingTools[1]
                               ? () {
-                                if (!team.helpingTools[1]) {
-                                  setState(() {
-                                    resetQuestion();
-                                    team.useHelpingTool(index);
-                                    teams[teams.indexOf(team)].useHelpingTool(
-                                      index,
-                                    );
-                                  });
-                                }
+                                setState(() {
+                                  resetQuestion();
+                                  team.useHelpingTool(1);
+                                });
                               }
                               : null,
+                      color: Color(0xFFFFB74D),
                     ),
-                    IconButton(
-                      disabledColor: Colors.white54,
-                      icon: Icon(
-                        Icons.person,
-                        color:
-                            !team.helpingTools[1]
-                                ? Colors.white
-                                : Colors.white54,
-                        size: 60,
-                      ),
-                      onPressed: () {
-                        // resetQuestion();
-                      },
+                    buildToolIcon(
+                      icon: Icons.person,
+                      used: team.helpingTools[2],
+                      onTap:
+                          !team.helpingTools[2]
+                              ? () {
+                                setState(() {
+                                  team.useHelpingTool(2);
+                                });
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      backgroundColor: const Color.fromARGB(
+                                        154,
+                                        0,
+                                        0,
+                                        0,
+                                      ),
+                                      content: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 100,
+                                              backgroundColor: Color(
+                                                0xFFFF6F61,
+                                              ),
+                                              child: Icon(
+                                                Icons.person,
+                                                size: 105,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 35),
+                                            Text(
+                                              "Ask A Doctor",
+                                              style: TextStyle(
+                                                fontSize: 50,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+                              : null,
+                      color: Color(0xFFFF6F61),
                     ),
                   ],
                 ),
@@ -1077,6 +1154,44 @@ class _QuestionsScreenState extends State<QuestionsScreen>
             ],
           ),
         );
+  }
+
+  Widget buildToolIcon({
+    required IconData icon,
+    required bool used,
+    required VoidCallback? onTap,
+    required Color color,
+  }) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: used ? null : onTap,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: used ? Colors.white24 : color,
+            boxShadow:
+                used
+                    ? []
+                    : [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+          ),
+          child: Icon(
+            icon,
+            color: used ? Colors.white54 : Colors.black87,
+            size: 40,
+          ),
+        ),
+      ),
+    );
   }
 
   // Widget buildScoreCardThereTurn(

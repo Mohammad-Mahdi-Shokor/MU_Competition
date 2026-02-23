@@ -44,7 +44,7 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
     super.initState();
 
     // always clone incoming teams to avoid mutation bugs
-    teams = widget.teams.map((t) => t.copy()).toList();
+    teams = widget.teams;
 
     // calculate round
     round = teams.fold(0, (sum, t) => sum + t.Level);

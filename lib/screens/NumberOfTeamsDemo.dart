@@ -13,7 +13,7 @@ class Numberofteamsdemo extends StatefulWidget {
 }
 
 class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
-  int size = 1;
+  int size = 4;
   bool DarkMode = true;
   final List<String> backgroundSource = [
     "assets/Background.json",

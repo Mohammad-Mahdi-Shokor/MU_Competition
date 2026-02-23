@@ -73,18 +73,13 @@ class _OnevoneresultsState extends State<Onevoneresults> {
   }
 
   void _updateTeamLevel(String teamName, int newLevel) {
-    final updatedTeams =
-        teams.map((team) {
-          if (team.TeamName == teamName) {
-            return Team(
-              List<String>.from(team.Members),
-              team.TeamName,
-              team.club,
-              newLevel,
-            );
-          }
-          return team.copy();
-        }).toList();
+    for (var team in teams) {
+      if (team.TeamName == teamName) {
+        team.Level = newLevel; // just update level
+      }
+    }
+
+    final updatedTeams = teams;
 
     // Logging for debug
     String debugData = updatedTeams.map((t) => t.GetData()).join();
